@@ -1,4 +1,4 @@
-package org.fundaciobit.plugins;
+package org.fundaciobit.pluginsib.core;
 /**
  * 
  * @author anadal

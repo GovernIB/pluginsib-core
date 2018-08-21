@@ -1,4 +1,4 @@
-package org.fundaciobit.plugins.utils;
+package org.fundaciobit.pluginsib.core.utils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

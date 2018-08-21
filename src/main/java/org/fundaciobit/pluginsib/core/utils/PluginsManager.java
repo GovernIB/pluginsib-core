@@ -1,4 +1,4 @@
-package org.fundaciobit.plugins.utils;
+package org.fundaciobit.pluginsib.core.utils;
 
 import java.util.Properties;
 import org.apache.log4j.Logger;

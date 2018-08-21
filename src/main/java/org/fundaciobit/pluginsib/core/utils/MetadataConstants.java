@@ -1,4 +1,4 @@
-package org.fundaciobit.plugins.utils;
+package org.fundaciobit.pluginsib.core.utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

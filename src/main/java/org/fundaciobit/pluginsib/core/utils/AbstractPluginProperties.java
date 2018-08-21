@@ -1,7 +1,8 @@
-package org.fundaciobit.plugins.utils;
+package org.fundaciobit.pluginsib.core.utils;
 
 import java.util.Properties;
-import org.fundaciobit.plugins.IPlugin;
+
+import org.fundaciobit.pluginsib.core.IPlugin;
 
 /**
  * 

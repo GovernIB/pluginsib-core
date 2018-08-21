@@ -1,4 +1,4 @@
-package org.fundaciobit.plugins.test;
+package org.fundaciobit.pluginsib.core.test;
 
 import java.io.FileInputStream;
 import java.util.Properties;
