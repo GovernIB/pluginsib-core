@@ -6,4 +6,4 @@ Repositori que conté classes comunes i d'utilitat de PluginsIB. No conté cap l
 
 Aquest és el plugin procedent de [pluginsib-api-1.0](https://github.com/GovernIB/pluginsib/tree/pluginsib-1.0/plugins-api).  
 
-Aquest repositori forma part de [pluginsib-2.0](https://github.com/GovernIB/pluginsib/tree/pluginsib-2.0).
+El plugin forma part de [pluginsib-2.0](https://github.com/GovernIB/pluginsib/tree/pluginsib-2.0).
