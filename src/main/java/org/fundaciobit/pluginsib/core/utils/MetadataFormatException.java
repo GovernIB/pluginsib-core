@@ -8,6 +8,11 @@ package org.fundaciobit.pluginsib.core.utils;
 public class MetadataFormatException extends Exception {
 
   /**
+	 * 
+	 */
+	private static final long serialVersionUID = -9105346788555222017L;
+
+/**
    * 
    */
   public MetadataFormatException() {

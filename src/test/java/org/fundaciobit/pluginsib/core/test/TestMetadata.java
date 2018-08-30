@@ -24,7 +24,8 @@ public class TestMetadata  {
   }
   
   
-  public static void main(String[] args) {
+  @SuppressWarnings("unchecked")
+public static void main(String[] args) {
     
     try {
       
@@ -58,13 +59,14 @@ public class TestMetadata  {
       
       
       XMLDecoder dec = new XMLDecoder(new ByteArrayInputStream(baos.toByteArray()));
+
       
       HashMap<String, ArrayList<Metadata>> all2 = (HashMap<String, ArrayList<Metadata>>)dec.readObject();
       
       System.out.println(all2.size());
       
       
-      
+      dec.close();
       
     } catch (Exception e) {
       // TODO Auto-generated catch block

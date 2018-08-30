@@ -1,4 +1,4 @@
-package org.fundaciobit.pluginsib.validatecertficate;
+package org.fundaciobit.pluginsib.core.Test;
 
 import java.io.FileInputStream;
 import java.util.Properties;

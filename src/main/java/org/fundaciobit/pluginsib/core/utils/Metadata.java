@@ -12,7 +12,12 @@ import java.util.Date;
  */
 public class Metadata implements Serializable {
 
-  protected MetadataType metadataType;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3807606506771214536L;
+
+protected MetadataType metadataType;
 
   protected String key;
 

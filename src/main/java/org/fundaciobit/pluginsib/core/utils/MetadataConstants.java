@@ -201,7 +201,8 @@ public class MetadataConstants {
    */
   public static final String ENI_TIPO_FIRMA = "eni:tipoFirma";
   
-  public static final MetadataConstant _ENI_TIPO_FIRMA = new MetadataConstant(ENI_TIPO_FIRMA,
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_TIPO_FIRMA = new MetadataConstant(ENI_TIPO_FIRMA,
       MetadataType.STRING, "Denominación normalizada del tipo de firma",
       new HashMap<String, String>(){{
         put("TF01","CSV");
@@ -229,7 +230,8 @@ public class MetadataConstants {
   public static final String ENI_PERFIL_FIRMA = "eni:perfil_firma";
   
   
-  public static final MetadataConstant _ENI_PERFIL_FIRMA = new MetadataConstant(ENI_PERFIL_FIRMA,
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_PERFIL_FIRMA = new MetadataConstant(ENI_PERFIL_FIRMA,
       MetadataType.STRING, "Perfil de firma empleado en una firma con certificado electrónico.",
       new HashMap<String, String>(){{
         put("EPES","Para las firmas XADES, CADES y PADES");
@@ -302,7 +304,8 @@ public class MetadataConstants {
    */
   public static final String ENI_VERSION_NTI = "eni:v_nti";
   
-  public static final MetadataConstant _ENI_VERSION_NTI = new MetadataConstant(ENI_VERSION_NTI,
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_VERSION_NTI = new MetadataConstant(ENI_VERSION_NTI,
       MetadataType.STRING, "Identificador normalizado de la versión de la Norma Técnica de Interoperabilidad",
       new HashMap<String, String>(){{
         put("http://administracionelectronica.gob.es/ENI/XSD/v1.0/expediente-e","Para expediente");
@@ -318,7 +321,8 @@ public class MetadataConstants {
    */
   public static final String ENI_ORIGEN = "eni:origen";
   
-  public static final MetadataConstant _ENI_ORIGEN = new MetadataConstant(ENI_ORIGEN,
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_ORIGEN = new MetadataConstant(ENI_ORIGEN,
       MetadataType.STRING, "Origen del contenido: Ciudadano o administración",
       new HashMap<String, String>(){{
         put("1","Administración");
@@ -352,7 +356,8 @@ public class MetadataConstants {
    */
   public static final String ENI_ESTADO_ELABORACION = "eni:estado_elaboracion";
   
-  public static final MetadataConstant _ENI_ESTADO_ELABORACION = new MetadataConstant(ENI_ESTADO_ELABORACION,
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_ESTADO_ELABORACION = new MetadataConstant(ENI_ESTADO_ELABORACION,
       MetadataType.STRING, "Estado de la situación de elaboración del documento.",
       new HashMap<String, String>(){{
         put("EE01","Original");
@@ -373,7 +378,8 @@ public class MetadataConstants {
    */
   public static final String ENI_TIPO_DOCUMENTAL = "eni:tipo_doc_ENI";
   
-  public static final MetadataConstant _ENI_TIPO_DOCUMENTAL = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_TIPO_DOCUMENTAL = new MetadataConstant(
       ENI_TIPO_DOCUMENTAL, MetadataType.STRING, "Tipo de documento ENI",
       new HashMap<String, String>(){{
         put("TD01", "Resolución");
@@ -491,7 +497,8 @@ public class MetadataConstants {
    */
   public static final String ENI_ESTADO_EXP = "eni:estado_exp";
   
-  public static final MetadataConstant _ENI_ESTADO_EXP = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_ESTADO_EXP = new MetadataConstant(
       ENI_ESTADO_EXP, MetadataType.STRING,
       "Estado del expediente en el momento de traslado (Abierto, Cerrado, Índice para remisión cerrado)",
       new HashMap<String, String>(){{
@@ -577,7 +584,8 @@ public class MetadataConstants {
    */
   public static final String ENI_SOPORTE = "eni:soporte";
   
-  public static final MetadataConstant _ENI_SOPORTE = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_SOPORTE = new MetadataConstant(
       ENI_SOPORTE, MetadataType.STRING,
       "Objeto físico donde se almacena un expediente o documento",
       new HashMap<String, String>(){{
@@ -672,7 +680,8 @@ public class MetadataConstants {
    */
   public static final String ENI_TIPO_ASIENTO_REGISTRAL = "eni:tipo_asiento_registral";
   
-  public static final MetadataConstant _ENI_TIPO_ASIENTO_REGISTRAL = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_TIPO_ASIENTO_REGISTRAL = new MetadataConstant(
       ENI_TIPO_ASIENTO_REGISTRAL, MetadataType.INTEGER,
       "Tipo de asiento registral",
       new HashMap<String, String>(){{
@@ -735,7 +744,8 @@ public class MetadataConstants {
    */
   public static final String ENI_ESTADO_ARCHIVO = "eni:estado_archivo";
   
-  public static final MetadataConstant _ENI_ESTADO_ARCHIVO = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_ESTADO_ARCHIVO = new MetadataConstant(
       ENI_ESTADO_ARCHIVO, MetadataType.STRING,
       "Tipo de asiento registral",
       new HashMap<String, String>(){{
@@ -759,7 +769,8 @@ public class MetadataConstants {
    */
   public static final String ENI_CATEGORIA = "eni:categoria";
   
-  public static final MetadataConstant _ENI_CATEGORIA = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_CATEGORIA = new MetadataConstant(
       ENI_CATEGORIA, MetadataType.STRING,
       "Tipo de entidad que se está describiendo",
       new HashMap<String, String>(){{
@@ -779,7 +790,8 @@ public class MetadataConstants {
    */
   public static final String ENI_LOPD = "eni:lopd";
   
-  public static final MetadataConstant _ENI_LOPD = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_LOPD = new MetadataConstant(
       ENI_LOPD, MetadataType.STRING,
       "Clasificación de sensibilidad LOPD",
       new HashMap<String, String>(){{
@@ -801,7 +813,8 @@ public class MetadataConstants {
    */
   public static final String ENI_CONFIDENCIALIDAD = "eni:confidencialidad";
   
-  public static final MetadataConstant _ENI_CONFIDENCIALIDAD = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_CONFIDENCIALIDAD = new MetadataConstant(
       ENI_CONFIDENCIALIDAD, MetadataType.STRING,
       "Nivel de confidencialidad de la información contenida en el documento acorde con"
       + " el Esquema Nacional de Seguridad.",
@@ -823,7 +836,8 @@ public class MetadataConstants {
    */
   public static final String ENI_TIPO_ACCESO = "eni:tipo_acceso";
   
-  public static final MetadataConstant _ENI_TIPO_ACCESO = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_TIPO_ACCESO = new MetadataConstant(
       ENI_TIPO_ACCESO, MetadataType.STRING,
       "El documento se rige por el régimen general de libre acceso o sujeto a alguna"
       + "de las limitaciones recogidas en la legislación o normativa de aplicación",
@@ -855,7 +869,8 @@ public class MetadataConstants {
    */
   public static final String ENI_CODIGO_CAUSA_LIMITACION = "eni:código_causa_limitacion";
 
-  public static final MetadataConstant _ENI_CODIGO_CAUSA_LIMITACION = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_CODIGO_CAUSA_LIMITACION = new MetadataConstant(
       ENI_CODIGO_CAUSA_LIMITACION, MetadataType.STRING,
        "Asigna una codificación a la causa de limitación de acceso que facilita las"
        + " consiguientes acciones automáticas precisas sobre el documento,"
@@ -899,7 +914,8 @@ public class MetadataConstants {
    */
   public static final String ENI_FASE_ARCHIVO = "eni:fase_archivo";
   
-  public static final MetadataConstant _ENI_FASE_ARCHIVO = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_FASE_ARCHIVO = new MetadataConstant(
       ENI_FASE_ARCHIVO, MetadataType.STRING,
       "Fase de archivo correspondiente al ciclo de vida del expediente que se transfiere.",
       new HashMap<String, String>(){{
@@ -944,7 +960,8 @@ public class MetadataConstants {
    */
   public static final String ENI_TIPO_VALOR = "eni:tipo_valor";
   
-  public static final MetadataConstant _ENI_TIPO_VALOR = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_TIPO_VALOR = new MetadataConstant(
       ENI_TIPO_VALOR, MetadataType.STRING,
       "Identifica los diferentes valores primarios de expedientes y documentos especificados en la Tabla de valoración",
       new HashMap<String, String>(){{
@@ -981,7 +998,8 @@ public class MetadataConstants {
    */
   public static final String ENI_VALOR_SECUNDARIO = "eni:valor_secundario";
   
-  public static final MetadataConstant _ENI_VALOR_SECUNDARIO = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_VALOR_SECUNDARIO = new MetadataConstant(
       ENI_VALOR_SECUNDARIO, MetadataType.STRING,
       "Determinación de la existencia de valores secundarios en los documentos y"
        + "expedientes cuya consecuencia será la conservación permanente",
@@ -1005,7 +1023,8 @@ public class MetadataConstants {
    */
   public static final String ENI_TIPO_DICTAMEN = "eni:tipo_dictamen";
 
-  public static final MetadataConstant _ENI_TIPO_DICTAMEN = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_TIPO_DICTAMEN = new MetadataConstant(
       ENI_TIPO_DICTAMEN, MetadataType.STRING,
       "Decisión emitida por la autoridad calificadora que debe aplicarse sobre los"
        + "documentos a lo largo de su ciclo de vida y una vez realizada su valoración",
@@ -1072,7 +1091,8 @@ public class MetadataConstants {
    */
   public static final String ENI_TIPO_CLASIFICACION= "eni:tipo_clasificacion";
   
-  public static final MetadataConstant _ENI_TIPO_CLASIFICACION = new MetadataConstant(
+  @SuppressWarnings("serial")
+public static final MetadataConstant _ENI_TIPO_CLASIFICACION = new MetadataConstant(
       ENI_TIPO_CLASIFICACION, MetadataType.STRING,
       "Decisión emitida por la autoridad calificadora que debe aplicarse sobre los"
       + " documentos a lo largo de su ciclo de vida y una vez realizada su valoración.",
