@@ -1,0 +1,73 @@
+
+
+(0) Generals:
+        * MAVEN PARENT: Ha de ser del tipus
+    
+    <parent>
+    <groupId><<packagebase>>.pluginsib.[nom_generic]</groupId>
+    <artifactId>pluginsib-[nom_generic]</artifactId>
+    <version>2.0.0</version>
+  </parent>
+    Per exemple:
+    <parent>
+    <groupId>org.fundaciobit.pluginsib.validatesignature</groupId>
+    <artifactId>pluginsib-validatesignature</artifactId>
+    <version>2.0.0</version>
+  </parent>
+    * Estructura de directoris ha de ser com segueix (aqui teniu l'exemple de pagament web):
+    pluginsib-paymentweb
+     │
+     ├───paymentwebsimple
+     │    ├───paymentwebsimpleapi
+     │    └───paymentwebsimpleserver(farà ús de l'API i els Plugins de PaymentWeb)
+     ├───api
+     ├───plugin1
+     ├───...
+     └───pluginN
+     NOTA: el subdirectori "xxxsimple" es opcional, només es requereix si per aquest plugin requerim una API SIMPLE.
+   * GITHUB: master només a ha de contenir un readme.md. Just acabat de crear el repositori s'ha de fer una nova branca: pluginsib-[nom_generic]-1.0
+   
+
+(1) API: 
+    * MAVEN:
+        - Ha de tenir una dependencia a pluginsib-core-2.0.0
+        - L'artifact ha de ser: "pluginsib-[nom_generic]-api"
+    * Package Java: <<packagebase>>.pluginsib.[nom_generic].api  => per exemple org.fundaciobit.pluginsib.validatesignature.api
+    * Format per una interface denominada I[NomGeneric].java:
+                   - Ha de fer extends de IPlugin. Per exemple "public interface IValidateSignaturePlugin extends IPlugin"
+                   - Ha de contenir una constant [NOM_GENERIC]_BASE_PROPERTY amb valor 'IPLUGINSIB_BASE_PROPERTIES + "[nomgeneric]."' Per exemple: public static final String VALIDATE_SIGNATURE_BASE_PROPERTY = IPLUGINSIB_BASE_PROPERTIES + "validatesignature.";
+                   - Prototipus dels Mètodes de l'API: es recomana que entre aquests hi hagi els següents mètodes:
+                        + mètodes per indicar que suporta i que no. Per exemple: getSupportedSignatureRequestedInformation() o getSignaturesSupported()
+                        + mètode filter: per indicar si aquest plugin pot pocessar la petició requerida. Hauria de tornar null si tot bé i l'error si hi hagues alguna incompatibilitat o error (traduit al 
+    * Beans de suport a la interficie  "I[NomGeneric].class"
+    * Un classe abstract que implementi "I[NomGeneric].class" i estengui de AbstractPluginProperties (o AbstractPluginPropertiesMessagesTranslations si es volen missatges i traduccions) amb nom "Abstract[NomGeneric]Plugin" i ha de contenir codi comú i d'utilitat pels plugin que s'implementin. Per exemple "public abstract class AbstractValidateSignaturePlugin extends AbstractPluginProperties implements IValidateSignaturePlugin" o "public abstract class AbstractValidateSignaturePlugin extends AbstractPluginPropertiesMessagesTranslations implements IValidateSignaturePlugin"
+    * A ser possible l'apartat de tests han de contenir tests genèrics per ser reutilitzats en els plugins.
+
+
+(2) PLUGIN X
+    * MAVEN:
+        - Ha de tenir una dependencia a <<packagebase>>.pluginsib.[nom_generic].api
+        - L'artifact ha de ser: "pluginsib-[nom_generic]-[nom_plugin]" (per exemple pluginsib-validatesignature-afirmacxf)
+    * El package ha de ser: <<packagebase>>.pluginsib.[nom_generic].[nom_plugin]" (per exemple org.fundaciobit.pluginsib.validatesignature.afirmacxf)
+    * La classe del plugin ha de tenir aquestes característiques:
+         + S'ha d'anomenar d'aquesta forma: [NomPlugin][NomGeneric]Plugin.java en format java. Per exemple  AfirmaCxfValidateSignaturePlugin.java
+         + Ha de derivar de la classe Abstract de l'API: Abstract[NomGeneric]Plugin. Per exemple: public class AfirmaCxfValidateSignaturePlugin extends AbstractValidateSignaturePlugin
+         + Ha de contenir una constant [NOM_PLUGIN]_BASE_PROPERTY amb valor '[NOM_GENERIC]_BASE_PROPERTIES + "[nompluginc]."' Per exemple: public static final String AFIRMACXF_BASE_PROPERTIES = VALIDATE_SIGNATURE_BASE_PROPERTY  + "afirmacxf.";
+         + Ha de contenir 3 constructors:
+            public Constructor1() {
+              super();
+            }
+
+            public Constructor2(String propertyKeyBase, Properties properties) {
+              super(propertyKeyBase, properties);
+            }
+
+            public Constructor3(String propertyKeyBase) {
+              super(propertyKeyBase);
+            }
+
+            
+            
+
+
+
