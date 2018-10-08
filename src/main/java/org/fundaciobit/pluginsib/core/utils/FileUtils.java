@@ -3,10 +3,12 @@ package org.fundaciobit.pluginsib.core.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Properties;
 
 /**
  * 
@@ -93,6 +95,28 @@ public class FileUtils {
     while (-1 != (n = input.read(buffer))) {
       output.write(buffer, 0, n);
     }
+  }
+  
+  /**
+   *
+   * @param props
+   * @return
+   * @throws FileNotFoundException
+   * @throws IOException
+   */
+  public static Properties readPropertiesFromFile(File props) throws FileNotFoundException,
+    IOException {
+  
+    Properties prop = null;
+    if (props.exists()) {
+    
+      prop = new Properties();
+    
+      FileInputStream fis = new FileInputStream(props);
+      prop.load(fis);
+      fis.close();
+    }
+    return prop;
   }
   
  
