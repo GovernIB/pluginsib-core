@@ -37,7 +37,7 @@ a
 a
 
 
-#### ***Documentacio***
+#### ***Documentació***
 
 Directori | Descripció | Documentació
 ------------ | ------------- | -------------
