@@ -8,7 +8,11 @@ Repositori que conté les classes comunes i d'utilitat de PluginsIB. No conté c
 ***Versions***
 
 > - Versió Estable: -
-> - Versió en Desenvolupament: __pluginsib-core-2.0__ (branca [pluginsib-core-2.0](https://github.com/GovernIB/pluginsib-core/tree/pluginsib-core-2.0))
+> - Versió en Desenvolupament: __pluginsib-core-2.0__ (branca [pluginsib-core-2.0](./tree/pluginsib-core-2.0))
+
+***Documentació***
+
+[Documentació branca estable](./tree/pluginsib-core-2.0#documentaci%C3%B3)
 
 ***Enllaços***
 
