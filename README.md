@@ -6,37 +6,6 @@
 Repositori que conté les classes comunes i d'utilitat de PluginsIB. No té cap dependència a cap llibrería de tercers.
 
 
-
-a
-a
-a
-a
-a
-a
-a
-a
-a
-
-a<br/>
-a<br/>
-a<br/>
-a<br/>
-a<br/>
-a<br/>
-a<br/>
-a<br/>
-a<br/>
-
-a<br/>
-a<br/>
-a<br/>
-a<br/>
-a
-a
-a
-a
-
-
 #### ***Documentació***
 
 Directori | Descripció | Documentació
