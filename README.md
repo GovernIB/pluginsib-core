@@ -12,7 +12,7 @@ Repositori que conté les classes comunes i d'utilitat de PluginsIB. No conté c
 
 ***Documentació***
 
-[Documentació branca estable](./tree/pluginsib-core-2.0#documentaci%C3%B3)
+[Documentació branca estable](./pluginsib-core/tree/pluginsib-core-2.0#documentaci%C3%B3)
 
 ***Enllaços***
 
