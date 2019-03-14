@@ -8,7 +8,7 @@ Repositori que conté les classes comunes i d'utilitat de PluginsIB. No té cap 
 
 #### ***Documentació***
 
-Directori | Descripció | Documentació
+Fitxer | Descripció | Documentació
 ------------ | ------------- | -------------
 API_i_Plugin.png | Representació gràfica dels conceptes Plugin i API. | [Document](./doc/API_i_Plugin.png)
 Introduccio_PluginsIB.pdf | Serveis de validació de firma que ataquen al WS de eSignature. | [Document](./doc/Introduccio_PluginsIB.pdf)
