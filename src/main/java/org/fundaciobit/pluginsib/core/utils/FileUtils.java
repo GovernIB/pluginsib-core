@@ -6,8 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 /**
@@ -111,9 +113,10 @@ public class FileUtils {
     if (props.exists()) {
     
       prop = new Properties();
+      
     
       FileInputStream fis = new FileInputStream(props);
-      prop.load(fis);
+      prop.load(new InputStreamReader(fis, Charset.forName("UTF-8")));
       fis.close();
     }
     return prop;

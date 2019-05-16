@@ -651,7 +651,7 @@ public class CertificateUtils {
         DerValue[] secs = octed.getData().getSequence(0);
 
         String fulloid = secs[0].toString();
-
+        
         if (fulloid != null && fulloid.startsWith("OID.")) {
           return fulloid.substring(4);
         }
@@ -685,7 +685,11 @@ public class CertificateUtils {
    */
   public static String getCarrec(X509Certificate cert) throws Exception {
     Map<String, String> map = getAlternativeNamesOfExtension(cert, SUBJECT_ALT_NAME_OID);
-    return map.get("OID.2.16.724.1.3.5.3.2.11");
+    String carrec = map.get("OID.2.16.724.1.3.5.3.2.11");
+    if (carrec == null) {
+      carrec = map.get("OID.2.16.724.1.3.5.7.2.11");
+    }
+    return carrec;
   }
   
   
