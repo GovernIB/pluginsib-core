@@ -304,6 +304,35 @@ public class CertificateUtils {
      */
 
   }
+  
+  
+  
+  public static boolean isPseudonymCertificate(X509Certificate certificate) throws Exception {
+
+    String politica = CertificateUtils.getCertificatePolicyId(certificate);
+
+    if (politica != null && politica.startsWith("2.16.724.1.3.5.4.")) {
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+
+  public static String getPseudonym(X509Certificate certificate) {
+
+    if (certificate == null) {
+      return null;
+    }
+
+    final String subjectDNStr = certificate.getSubjectDN().toString();
+
+    return CertificateUtils.getRDNvalue("OID.2.5.4.65", subjectDNStr);
+
+  }
+  
+  
+  
 
   /***************************************************************************
    * METODOS PRIVADOS
@@ -566,7 +595,7 @@ public class CertificateUtils {
    *          Principal del que extraer el RDN
    * @return Valor del RDN indicado o {@code null} si no se encuentra.
    */
-  private static String getRDNvalue(final String rdn, final String principal) {
+  public static String getRDNvalue(final String rdn, final String principal) {
 
     int offset1 = 0;
     while ((offset1 = principal.toLowerCase().indexOf(rdn.toLowerCase(), offset1)) != -1) {
