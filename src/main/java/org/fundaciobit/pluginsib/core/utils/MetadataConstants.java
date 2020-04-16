@@ -3,6 +3,7 @@ package org.fundaciobit.pluginsib.core.utils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -97,6 +98,25 @@ public class MetadataConstants {
       this.description = description;
       this.aliases = aliases;
     }
+    
+    /**
+     * @param key
+     * @param type
+     * @param allowedValues
+     * @param patternRegEx
+     * @param description
+     * @param aliases
+     */
+    public MetadataConstant(String key, MetadataConstant data) {
+      super();
+      this.key = key;
+      this.type = data.type;
+      this.allowedValues = data.allowedValues;
+      this.patternRegEx = data.patternRegEx;
+      this.description = data.description;
+      this.aliases = data.aliases;
+    }
+    
 
     public Map<String, String> getAllowedValues() {
       return allowedValues;
@@ -194,14 +214,24 @@ public class MetadataConstants {
       MetadataType.STRING, "Denominación normalizada del tipo de firma",
       new HashMap<String, String>() {
         {
-          put("TF01", "CSV");
-          put("TF02", "XAdES internally detached signature");
-          put("TF03", "XAdES enveloped signature");
-          put("TF04", "CAdES detached/explicit signature");
-          put("TF05", "CAdES attached/implicit signature");
-          put("TF06", "PAdES");
+          put(TipoFirma.CSV, "CSV");
+          put(TipoFirma.XADES_INTERNALLY_DETACHED, "XAdES internally detached signature");
+          put(TipoFirma.XADES_ENVELOPED_SIGNATURE, "XAdES enveloped signature");
+          put(TipoFirma.CADES_DETACHED_EXPLICIT_SIGNATURE, "CAdES detached/explicit signature");
+          put(TipoFirma.CADES_ATTACHED_IMPLICIT_SIGNATURE, "CAdES attached/implicit signature");
+          put(TipoFirma.PADES, "PAdES");
         }
       });
+  
+  
+  public static final class TipoFirma {
+    public static final String CSV= "TF01";
+    public static final String XADES_INTERNALLY_DETACHED = "TF02";
+    public static final String XADES_ENVELOPED_SIGNATURE = "TF03";
+    public static final String CADES_DETACHED_EXPLICIT_SIGNATURE = "TF04";
+    public static final String CADES_ATTACHED_IMPLICIT_SIGNATURE = "TF05";
+    public static final String PADES = "TF06";
+  }
 
   /**
    * Perfil empleado en una firma con certificado electrónico. Los posibles valores asignables
@@ -239,6 +269,75 @@ public class MetadataConstants {
       ENI_FECHA_SELLADO, MetadataType.DATE,
       "Fecha en la que fue resellado el documento por última vez."
           + "Un valor nulo, indica que nunca ha sido resellado");
+  
+  
+  
+  /**
+   * Indicador normalizado de la función que desempeña la firma utilizada.
+   */
+  public static final String EEMGDE_ROL_FIRMA = "eEMGDE.Firma.RolFirma";
+  
+  public static final MetadataConstant _EEMGDE_ROL_FIRMA = new MetadataConstant(
+      EEMGDE_ROL_FIRMA, MetadataType.STRING,
+      "Indicador normalizado de la función que desempeña la firma utilizada",
+      new HashMap<String, String>() {
+        {
+          put("Valida", "");
+          put("Refrenda", "");
+          put("Testimonia", "");
+        }
+      });
+
+  
+  /**
+   * Informa sobre el nombre completo del firmante o los firmantes del documento
+   */
+  public static final String EEMGDE_FIRMANTE_NOMBRECOMPLETO = "eEMGDE.Firma.Firmante.NombreApellidos";
+  
+  public static final MetadataConstant _EEMGDE_FIRMANTE_NOMBRECOMPLETO = new MetadataConstant(
+      EEMGDE_FIRMANTE_NOMBRECOMPLETO, MetadataType.STRING,
+      "Informa sobre el nombre completo del firmante o los firmantes del documento."
+      );
+
+
+  
+  
+  /**
+   * Proporciona un identificador de las personas físicas o jurídicas que firman el documento.
+   */
+  public static final String EEMGDE_FIRMANTE_IDENTIFICADOR = "eEMGDE.Firma.Firmante.NumeroIdentificacionFirmantes";
+  
+  public static final MetadataConstant _EEMGDE_FIRMANTE_IDENTIFICADOR = new MetadataConstant(
+      EEMGDE_FIRMANTE_IDENTIFICADOR, MetadataType.STRING,
+      "Proporciona un identificador de las personas físicas o jurídicas que firman el documento."
+      );
+  
+
+  
+  
+  /**
+   * Indicador normalizado que refleja el grado de confianza de la firma utilizado..
+   */
+  public static final String EEMGDE_NIVEL_DE_FIRMA = "eEMGDE.Firma.NivelFirma";
+  
+  public static final MetadataConstant _EEMGDE_NIVEL_DE_FIRMA = new MetadataConstant(
+      EEMGDE_NIVEL_DE_FIRMA, MetadataType.STRING,
+      "Indicador normalizado que refleja el grado de confianza de la firma utilizado.",
+      new HashMap<String, String>() {
+        {
+          put("Nick", "");
+          put("PIN ciudadano", "");
+          put("Firma electrónica avanzada", "");
+          put("Claves concertadas", "");
+          put("Firma electrónica avanzada basada en certificados", "");
+          put("CSV", "");
+        }
+      });
+ 
+  
+  
+  
+  
 
   // -------------------------------------------------------------------------
   // -------------------------------------------------------------------------
@@ -301,10 +400,18 @@ public class MetadataConstants {
       MetadataType.STRING, "Origen del contenido: Ciudadano o administración",
       new HashMap<String, String>() {
         {
-          put("1", "Administración");
-          put("0", "Ciudadano");
+          put(String.valueOf(OrigenConstants.CIUDADANO), "Ciudadano");
+          put(String.valueOf(OrigenConstants.ADMINISTRACION), "Administración");
         }
       });
+  
+  
+  public static final class OrigenConstants {
+  public static final int ADMINISTRACION = 1;
+  public static final int CIUDADANO = 0;
+  }
+  
+  
 
   /**
    * Identificador normalizado del documento origen al que corresponda la copia, si este es un
@@ -332,13 +439,39 @@ public class MetadataConstants {
       ENI_ESTADO_ELABORACION, MetadataType.STRING,
       "Estado de la situación de elaboración del documento.", new HashMap<String, String>() {
         {
-          put("EE01", "Original");
-          put("EE02", "Copia electrónica auténtica con cambio de formato");
-          put("EE03", "Copia electrónica auténtica de documento papel");
-          put("EE04", "Copia electrónica parcial auténtica");
-          put("EE99", "Otros");
+          put(EstadoElaboracionConstants.ESTADO_ELABORACION_ORIGINAL, "Original"); // EE01
+          put(EstadoElaboracionConstants.ESTADO_ELABORACION_COPIA_CF, "Copia electrónica auténtica con cambio de formato"); // EE02
+          put(EstadoElaboracionConstants.ESTADO_ELABORACION_COPIA_DP, "Copia electrónica auténtica de documento papel");  // EE03
+          put(EstadoElaboracionConstants.ESTADO_ELABORACION_COPIA_PR, "Copia electrónica parcial auténtica"); // EE04
+          put(EstadoElaboracionConstants.ESTADO_ELABORACION_OTROS, "Otros"); // EE99
         }
       });
+  
+  
+  public static final class EstadoElaboracionConstants {
+  
+    public final static String ESTADO_ELABORACION_ORIGINAL = "EE01";
+  
+    /**
+     * Còpia electrònica autèntica amb canvi de format (Llei 11/2007 Art. 30.1).
+     */
+    public final static String ESTADO_ELABORACION_COPIA_CF = "EE02";
+  
+    /**
+     * Còpia electrònica autèntica de document en paper amb canvi de format (Llei 11/2007 Art.
+     * 30.2 i 30.3).
+     */
+    public final static String ESTADO_ELABORACION_COPIA_DP = "EE03";
+    /**
+     * Còpia electrònica parcial autèntica.
+     */
+    public final static String ESTADO_ELABORACION_COPIA_PR = "EE04";
+  
+    /**
+     * ALTRES("EE99"): Altres estats d'elaboració.
+     */
+    public final static String ESTADO_ELABORACION_OTROS = "EE99";
+  }
 
   /**
    * Tipo de documento ENI. Los posibles valores asignables son los siguientes: TD01
@@ -394,9 +527,21 @@ public class MetadataConstants {
           put("TD68", "Iniciativa legislativa.");
           put("TD69", "Petición.");
           put("TD99", "Otros tipus de documentos");
+        }}, null,
+        new HashSet<String>()  {
+          {
+            add(ENI_TIPO_DOCUMENTAL);
+            add(EEMGDE_TIPO_DOCUMENTAL);
+          }
         }
-      });
+      );
 
+
+  
+  public static final String EEMGDE_TIPO_DOCUMENTAL = "eEMGDE.TipoDocumental";
+     
+  public static final MetadataConstant _EEMGDE_TIPO_DOCUMENTAL = new MetadataConstant(EEMGDE_TIPO_DOCUMENTAL, _ENI_TIPO_DOCUMENTAL);
+  
   /**
    * Fecha de captura del documento o apertura del expediente en el sistema. Si no es informada
    * por el sistema de información, se establece la fecha de creación del nodo en el SGD.
@@ -459,15 +604,18 @@ public class MetadataConstants {
   public static final MetadataConstant _ENI_RESOLUCION = new MetadataConstant(ENI_RESOLUCION,
       MetadataType.STRING,
       "Medida de la capacidad para capturar los detalles del documento original, "
-          + "a menudo cuantificada en píxeles por pulgada.",
-      "\\s*\\d+\\s*x\\s*\\d+\\s*[a-zA-Z]*\\s*");
+          + "a menudo cuantificada en píxeles por pulgada.", 
+          //, "\\s*\\d+\\s*x\\s*\\d+\\s*[a-zA-Z]*\\s*"
+          null, null, new HashSet<String>() { { add(EEMGDE_RESOLUCION); }});
 
   /**
    * Idioma o lengua utilizada en un documento, hablada o usada por un agente al realizar una
    * actividad. Utilizar formato RFC4646:2006
    */
+  @Deprecated
   public static final String ENI_IDIOMA = "eni:idioma";
 
+  @Deprecated
   public static final MetadataConstant _ENI_IDIOMA = new MetadataConstant(ENI_IDIOMA,
       MetadataType.STRING,
       "Idioma o lengua utilizada en un documento, hablada o usada por un agente al"
@@ -715,7 +863,7 @@ public class MetadataConstants {
 
   /**
    * Tipo de entidad que se está describiendo. Los posibles valores asignables son los
-   * siguientes: - Serie - Expediente. - Documento simple.
+   * siguientes: Serie, Expediente o Documento simple.
    */
   public static final String ENI_CATEGORIA = "eni:categoria";
 
@@ -1021,6 +1169,16 @@ public class MetadataConstants {
   /** =============== Metadades especifiques en l'escaneig ================ **/
   /** ==== ( https://github.com/GovernIB/pluginsib-scanweb/issues/16 ) ==== **/
   /** ===================================================================== **/
+  
+  /**
+   * TITULO o NOMBRE DEL DOCUMENTO
+   */
+  public static final String TITULO_DOCUMENTO = "titulo_documento";
+  
+  public static final MetadataConstant _TITULO_DOCUMENTO = new MetadataConstant(TITULO_DOCUMENTO,
+      MetadataType.STRING, "Nombre del Documento");
+  
+  
 
   /**
    * Tamany del document paper. Els valors per defecte estan en mm
@@ -1030,147 +1188,199 @@ public class MetadataConstants {
   public static final MetadataConstant _PAPER_SIZE = new MetadataConstant(PAPER_SIZE,
       MetadataType.STRING, "Tamany del document paper", new HashMap<String, String>() {
         {
-          put(PAPER_SIZE_A4, "210x297");
-          put(PAPER_SIZE_JISB5, "");
-          put(PAPER_SIZE_USLETTER, "216x279");
-          put(PAPER_SIZE_USLEGAL, "216x356");
-          put(PAPER_SIZE_A5, "148x210");
-          put(PAPER_SIZE_B4, "");
-          put(PAPER_SIZE_B6, "");
-          put(PAPER_SIZE_USLEDGER, "");
-          put(PAPER_SIZE_USEXECUTIVE, "");
-          put(PAPER_SIZE_A3, "297x420");
-          put(PAPER_SIZE_B3, "");
-          put(PAPER_SIZE_A6, "105x148");
-          put(PAPER_SIZE_C4, "");
-          put(PAPER_SIZE_C5, "");
-          put(PAPER_SIZE_C6, "");
-          put(PAPER_SIZE_4A0, "");
-          put(PAPER_SIZE_2A0, "");
-          put(PAPER_SIZE_A0, "841x1189");
-          put(PAPER_SIZE_A1, "594x841");
-          put(PAPER_SIZE_A2, "420x594");
-          put(PAPER_SIZE_A7, "74x105");
-          put(PAPER_SIZE_A8, "52x74");
-          put(PAPER_SIZE_A9, "37x52");
-          put(PAPER_SIZE_A10, "26x37");
-          put(PAPER_SIZE_ISOB0, "");
-          put(PAPER_SIZE_ISOB1, "");
-          put(PAPER_SIZE_ISOB2, "");
-          put(PAPER_SIZE_ISOB5, "");
-          put(PAPER_SIZE_ISOB7, "");
-          put(PAPER_SIZE_ISOB8, "");
-          put(PAPER_SIZE_ISOB9, "");
-          put(PAPER_SIZE_ISOB10, "");
-          put(PAPER_SIZE_JISB0, "");
-          put(PAPER_SIZE_JISB1, "");
-          put(PAPER_SIZE_JISB2, "");
-          put(PAPER_SIZE_JISB3, "");
-          put(PAPER_SIZE_JISB4, "");
-          put(PAPER_SIZE_JISB6, "");
-          put(PAPER_SIZE_JISB7, "");
-          put(PAPER_SIZE_JISB8, "");
-          put(PAPER_SIZE_JISB9, "");
-          put(PAPER_SIZE_JISB10, "");
-          put(PAPER_SIZE_C0, "");
-          put(PAPER_SIZE_C1, "");
-          put(PAPER_SIZE_C2, "");
-          put(PAPER_SIZE_C3, "");
-          put(PAPER_SIZE_C7, "");
-          put(PAPER_SIZE_C8, "");
-          put(PAPER_SIZE_C9, "");
-          put(PAPER_SIZE_C10, "");
-          put(PAPER_SIZE_USEXECUTIVE, "");
-          put(PAPER_SIZE_BUSINESSCARD, "");
+          put(PaperSizeConstants.A4, "210x297");
+          put(PaperSizeConstants.JISB5, "");
+          put(PaperSizeConstants.USLETTER, "216x279");
+          put(PaperSizeConstants.USLEGAL, "216x356");
+          put(PaperSizeConstants.A5, "148x210");
+          put(PaperSizeConstants.B4, "");
+          put(PaperSizeConstants.B6, "");
+          put(PaperSizeConstants.USLEDGER, "");
+          put(PaperSizeConstants.USEXECUTIVE, "");
+          put(PaperSizeConstants.A3, "297x420");
+          put(PaperSizeConstants.B3, "");
+          put(PaperSizeConstants.A6, "105x148");
+          put(PaperSizeConstants.C4, "");
+          put(PaperSizeConstants.C5, "");
+          put(PaperSizeConstants.C6, "");
+          put(PaperSizeConstants.A0, "841x1189");
+          put(PaperSizeConstants.A1, "594x841");
+          put(PaperSizeConstants.A2, "420x594");
+          put(PaperSizeConstants.A7, "74x105");
+          put(PaperSizeConstants.A8, "52x74");
+          put(PaperSizeConstants.A9, "37x52");
+          put(PaperSizeConstants.A10, "26x37");
+          put(PaperSizeConstants.ISOB0, "");
+          put(PaperSizeConstants.ISOB1, "");
+          put(PaperSizeConstants.ISOB2, "");
+          put(PaperSizeConstants.ISOB5, "");
+          put(PaperSizeConstants.ISOB7, "");
+          put(PaperSizeConstants.ISOB8, "");
+          put(PaperSizeConstants.ISOB9, "");
+          put(PaperSizeConstants.ISOB10, "");
+          put(PaperSizeConstants.JISB0, "");
+          put(PaperSizeConstants.JISB1, "");
+          put(PaperSizeConstants.JISB2, "");
+          put(PaperSizeConstants.JISB3, "");
+          put(PaperSizeConstants.JISB4, "");
+          put(PaperSizeConstants.JISB6, "");
+          put(PaperSizeConstants.JISB7, "");
+          put(PaperSizeConstants.JISB8, "");
+          put(PaperSizeConstants.JISB9, "");
+          put(PaperSizeConstants.JISB10, "");
+          put(PaperSizeConstants.C0, "");
+          put(PaperSizeConstants.C1, "");
+          put(PaperSizeConstants.C2, "");
+          put(PaperSizeConstants.C3, "");
+          put(PaperSizeConstants.C7, "");
+          put(PaperSizeConstants.C8, "");
+          put(PaperSizeConstants.C9, "");
+          put(PaperSizeConstants.C10, "");
+          put(PaperSizeConstants.USEXECUTIVE, "");
+          put(PaperSizeConstants.BUSINESSCARD, "");
         }
       });
 
-  public static final String PAPER_SIZE_A4 = "A4";
-  public static final String PAPER_SIZE_JISB5 = "JISB5";
-  public static final String PAPER_SIZE_USLETTER = "USLETTER";
-  public static final String PAPER_SIZE_USLEGAL = "USLEGAL";
-  public static final String PAPER_SIZE_A5 = "A5";
-  public static final String PAPER_SIZE_B4 = "B4";
-  public static final String PAPER_SIZE_B6 = "B6";
-  public static final String PAPER_SIZE_USLEDGER = "USLEDGER";
-  public static final String PAPER_SIZE_USEXECUTIVE = "USEXECUTIVE";
-  public static final String PAPER_SIZE_A3 = "A3";
-  public static final String PAPER_SIZE_B3 = "B3";
-  public static final String PAPER_SIZE_A6 = "A6";
-  public static final String PAPER_SIZE_C4 = "C4";
-  public static final String PAPER_SIZE_C5 = "C5";
-  public static final String PAPER_SIZE_C6 = "C6";
-  public static final String PAPER_SIZE_4A0 = "4A0";
-  public static final String PAPER_SIZE_2A0 = "2A0";
-  public static final String PAPER_SIZE_A0 = "A0";
-  public static final String PAPER_SIZE_A1 = "A1";
-  public static final String PAPER_SIZE_A2 = "A2";
-  public static final String PAPER_SIZE_A7 = "A7";
-  public static final String PAPER_SIZE_A8 = "A8";
-  public static final String PAPER_SIZE_A9 = "A9";
-  public static final String PAPER_SIZE_A10 = "A10";
-  public static final String PAPER_SIZE_ISOB0 = "ISOB0";
-  public static final String PAPER_SIZE_ISOB1 = "ISOB1";
-  public static final String PAPER_SIZE_ISOB2 = "ISOB2";
-  public static final String PAPER_SIZE_ISOB5 = "ISOB5";
-  public static final String PAPER_SIZE_ISOB7 = "ISOB7";
-  public static final String PAPER_SIZE_ISOB8 = "ISOB8";
-  public static final String PAPER_SIZE_ISOB9 = "ISOB9";
-  public static final String PAPER_SIZE_ISOB10 = "ISOB10";
-  public static final String PAPER_SIZE_JISB0 = "JISB0";
-  public static final String PAPER_SIZE_JISB1 = "JISB1";
-  public static final String PAPER_SIZE_JISB2 = "JISB2";
-  public static final String PAPER_SIZE_JISB3 = "JISB3";
-  public static final String PAPER_SIZE_JISB4 = "JISB4";
-  public static final String PAPER_SIZE_JISB6 = "JISB6";
-  public static final String PAPER_SIZE_JISB7 = "JISB7";
-  public static final String PAPER_SIZE_JISB8 = "JISB8";
-  public static final String PAPER_SIZE_JISB9 = "JISB9";
-  public static final String PAPER_SIZE_JISB10 = "JISB10";
-  public static final String PAPER_SIZE_C0 = "C0";
-  public static final String PAPER_SIZE_C1 = "C1";
-  public static final String PAPER_SIZE_C2 = "C2";
-  public static final String PAPER_SIZE_C3 = "C3";
-  public static final String PAPER_SIZE_C7 = "C7";
-  public static final String PAPER_SIZE_C8 = "C8";
-  public static final String PAPER_SIZE_C9 = "C9";
-  public static final String PAPER_SIZE_C10 = "C10";
-  public static final String PAPER_SIZE_BUSINESSCARD = "BUSINESSCARD";
-
-  /**
   
+  public static final class PaperSizeConstants {
+    public static final String A4 = "A4";
+    public static final String JISB5 = "JISB5";
+    public static final String USLETTER = "USLETTER";
+    public static final String USLEGAL = "USLEGAL";
+    public static final String A5 = "A5";
+    public static final String B4 = "B4";
+    public static final String B6 = "B6";
+    public static final String USLEDGER = "USLEDGER";
+    public static final String USEXECUTIVE = "USEXECUTIVE";
+    public static final String A3 = "A3";
+    public static final String B3 = "B3";
+    public static final String A6 = "A6";
+    public static final String C4 = "C4";
+    public static final String C5 = "C5";
+    public static final String C6 = "C6";
+    public static final String A0 = "A0";
+    public static final String A1 = "A1";
+    public static final String A2 = "A2";
+    public static final String A7 = "A7";
+    public static final String A8 = "A8";
+    public static final String A9 = "A9";
+    public static final String A10 = "A10";
+    public static final String ISOB0 = "ISOB0";
+    public static final String ISOB1 = "ISOB1";
+    public static final String ISOB2 = "ISOB2";
+    public static final String ISOB5 = "ISOB5";
+    public static final String ISOB7 = "ISOB7";
+    public static final String ISOB8 = "ISOB8";
+    public static final String ISOB9 = "ISOB9";
+    public static final String ISOB10 = "ISOB10";
+    public static final String JISB0 = "JISB0";
+    public static final String JISB1 = "JISB1";
+    public static final String JISB2 = "JISB2";
+    public static final String JISB3 = "JISB3";
+    public static final String JISB4 = "JISB4";
+    public static final String JISB6 = "JISB6";
+    public static final String JISB7 = "JISB7";
+    public static final String JISB8 = "JISB8";
+    public static final String JISB9 = "JISB9";
+    public static final String JISB10 = "JISB10";
+    public static final String C0 = "C0";
+    public static final String C1 = "C1";
+    public static final String C2 = "C2";
+    public static final String C3 = "C3";
+    public static final String C7 = "C7";
+    public static final String C8 = "C8";
+    public static final String C9 = "C9";
+    public static final String C10 = "C10";
+    public static final String BUSINESSCARD = "BUSINESSCARD";
+  }
+
+  
+  
+  
+  /**
+   * Dimensiones de un documento físico, incluidas longitud, altura y profundidad y, si es pertinente, peso y volumen.
    */
-  public static final String RESOLUTION = "eEMGDE.CaracteristicasTecnicas.Resolucion";
+  public static final String EEMGDE_TAMANO_DIMENSIONES_FISICAS = "eEMGDE.CaracteristicasTecnicas.Tamano.DimensionesFisicas";
 
-  public static final MetadataConstant _RESOLUTION = new MetadataConstant(RESOLUTION,
+  public static final MetadataConstant _EEMGDE_TAMANO_DIMENSIONES_FISICAS = new MetadataConstant(EEMGDE_TAMANO_DIMENSIONES_FISICAS,
+      MetadataType.STRING, "Dimensiones de un documento físico, incluidas longitud, anchura y profundidad y, si es pertinente, peso y volumen."); 
+  
+
+  
+  /**
+   * Elemento de medida utilizado para registrar las dimensiones de un documento físico
+   * o el tamaño o la duración lógicos de un documento digital y para especificar
+   * el tipo de objeto a la que se refiere la cifra de la cantidad.
+   */
+  public static final String EEMGDE_TAMANO_UNIDADES = "eEMGDE.CaracteristicasTecnicas.Tamano.Unidades";
+
+  public static final MetadataConstant _EEMGDE_TAMANO_UNIDADES = new MetadataConstant(EEMGDE_TAMANO_UNIDADES,
+      MetadataType.STRING, "Elemento de medida utilizado para registrar las dimensiones de un documento físico "
+          + "o el tamaño o la duración lógicos de un documento digital y para especificar "
+          + "el tipo de objeto a la que se refiere la cifra de la cantidad.");
+
+  
+  public static final class TamanoUnidades {
+    
+    public static final String MILIMETRO = "mm";
+    public static final String CENTIMETRO = "cm";
+    public static final String METRO = "m";
+    public static final String KILOMETRO = "km";
+    
+    public static final String MILIGRAMO = "mg";
+    public static final String CENTIGRAMO = "cg";
+    public static final String GRAMO = "g";
+    public static final String KILOGRAMO = "kg";
+    public static final String TONELADA = "t";
+    
+    public static final String MILILITRO = "ml";
+    public static final String CENTILITRO = "cl";
+    public static final String LITRO = "l";
+    public static final String KILOLITRO = "kl";
+    
+  }
+  
+  
+  
+  
+  /**
+    * REsolucion
+   */
+  public static final String EEMGDE_RESOLUCION = "eEMGDE.CaracteristicasTecnicas.Resolucion";
+
+  public static final MetadataConstant _EEMGDE_RESOLUCION = new MetadataConstant(EEMGDE_RESOLUCION,
       MetadataType.STRING,
-      "Medida  de  la  capacidad  para  capturar  los  detalles  del  documento  original,  a  menudo  cuantificada en píxeles por pulgada");
-
+      "Medida  de  la  capacidad  para  capturar  los  detalles  del  documento  original,"
+      + "  a  menudo  cuantificada en píxeles por pulgada",
+      null, null, new HashSet<String>() { { add(ENI_RESOLUCION);} });
+  
   /**
    * profunditat de color
    */
-  public static final String PROFUNDIDAD_COLOR = "eEMGDE.CaracteristicasTecnicas.ProfundidadColor";
+  public static final String EEMGDE_PROFUNDIDAD_COLOR = "eEMGDE.CaracteristicasTecnicas.ProfundidadColor";
 
-  public static final MetadataConstant _PROFUNDIDAD_COLOR = new MetadataConstant(
-      PROFUNDIDAD_COLOR, MetadataType.INTEGER,
+  public static final MetadataConstant _EEMGDE_PROFUNDIDAD_COLOR = new MetadataConstant(
+      EEMGDE_PROFUNDIDAD_COLOR, MetadataType.INTEGER,
       "Profundidad  de  color  o  escala  de  grises  o  resolución  cromática  de  una  imagen  digitalizada",
       new HashMap<String, String>() {
         {
-          put(String.valueOf(PROFUNDIDAD_COLOR_BW), "1-bit monochrome");
+          put(String.valueOf(ProfundidadColorConstants.BW), "1-bit monochrome");
           put("2", "2-bit monochrome");
           put("3", "3-bit monochrome");
           put("4", "4-bit monochrome");
-          put(String.valueOf(PROFUNDIDAD_COLOR_GRAY), "color 256 or gray scale");
+          put(String.valueOf(ProfundidadColorConstants.GRAY), "color 256 or gray scale");
           put("16", "high color(15)");
           put("16", "high color(16)");
           put("24", "true color");
-          put(String.valueOf(PROFUNDIDAD_COLOR_DEEP_COLOR), "deep color");
+          put(String.valueOf(ProfundidadColorConstants.COLOR), "deep color");
         }
       });
 
-  public static final int PROFUNDIDAD_COLOR_BW = 1;
-  public static final int PROFUNDIDAD_COLOR_GRAY = 8;
-  public static final int PROFUNDIDAD_COLOR_DEEP_COLOR = 32;
+  public static final class ProfundidadColorConstants {
+    public static final int BW = 1;
+    public static final int GRAY = 8;
+    public static final int COLOR = 32;
+  }
 
   /**
    * profunditat de color
@@ -1179,11 +1389,51 @@ public class MetadataConstants {
 
   public static final MetadataConstant _OCR = new MetadataConstant(OCR, MetadataType.BOOLEAN,
       "Indica si el document ha passat per un process d'OCR (Reconeixement òptic de caràcters) ");
+  
+  
+  
+  
+
+  
+  
+  /**
+   * Idioma o lengua utilizada en un documento, hablada o usada por un agente al realizar una
+   * actividad. Utilizar formato RFC4646:2006
+   */
+  public static final String EEMGDE_IDIOMA = "eEMGDE.Idioma";
+
+
+  public static final MetadataConstant _EEMGDE_IDIOMA = new MetadataConstant(EEMGDE_IDIOMA,
+      MetadataType.STRING,
+      "Idioma o lengua utilizada en un documento, hablada o usada por un agente al"
+          + " realizar una actividad. Utilizar formato RFC4646:2006", null,
+      "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*", new HashSet<String>() {  {  add(ENI_IDIOMA); } });
+  
+  
+  /**
+   * Nom del Cuitada
+   */
+  public static final String CITIZEN_FULLNAME = "citizen_fullname";
+
+  public static final MetadataConstant _CITIZEN_FULLNAME = new MetadataConstant(
+      CITIZEN_FULLNAME, MetadataType.STRING,
+      "Nombre completo del ciudadano");
+
+  /**
+   * NIF del ciutada
+   */
+  public static final String CITIZEN_ADMINISTRATIONID = "citizen_administrationid";
+
+  public static final MetadataConstant _CITIZEN_ADMINISTRATIONID = new MetadataConstant(
+      CITIZEN_ADMINISTRATIONID, MetadataType.STRING,
+      "NIF del ciudadano");
+
+  
 
   /**
    * Username del funcionario que realizo el escaneo
    */
-  public static final String FUNCTIONARY_USERNAME = "functionary:username";
+  public static final String FUNCTIONARY_USERNAME = "functionary_username";
 
   public static final MetadataConstant _FUNCTIONARY_USERNAME = new MetadataConstant(
       FUNCTIONARY_USERNAME, MetadataType.STRING,
@@ -1192,7 +1442,7 @@ public class MetadataConstants {
   /**
    * Nombre completo del funcionario que realizo el escaneo
    */
-  public static final String FUNCTIONARY_FULLNAME = "functionary:fullname";
+  public static final String FUNCTIONARY_FULLNAME = "functionary_fullname";
 
   public static final MetadataConstant _FUNCTIONARY_FULLNAME = new MetadataConstant(
       FUNCTIONARY_FULLNAME, MetadataType.STRING,
@@ -1201,7 +1451,7 @@ public class MetadataConstants {
   /**
    * NIF del funcionario que realizo el escaneo
    */
-  public static final String FUNCTIONARY_ADMINISTRATIONID = "functionary:administrationid";
+  public static final String FUNCTIONARY_ADMINISTRATIONID = "functionary_administrationid";
 
   public static final MetadataConstant _FUNCTIONARY_ADMINISTRATIONID = new MetadataConstant(
       FUNCTIONARY_ADMINISTRATIONID, MetadataType.STRING,

@@ -51,7 +51,6 @@ import sun.security.x509.X500Name;
  * @author anadal
  *
  */
-@SuppressWarnings("restriction")
 public class CertificateUtils {
 
   private final static Logger log = Logger.getLogger(CertificateUtils.class.getName());
