@@ -46,71 +46,75 @@ import javax.net.ssl.X509TrustManager;
  */
 public final class XTrustProvider extends java.security.Provider {
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 6918225528412551855L;
+    private static final long serialVersionUID = 6918225528412551855L;
 
-  public final static String ALGORITHM = "XTrust509";
-  
-  private final static String NAME = "XTrustJSSE";
-  private final static String INFO = "XTrust JSSE Provider (implements trust factory with truststore validation disabled)";
-  private final static double VERSION = 1.0D;
+    public final static String ALGORITHM = "XTrust509";
 
-  public XTrustProvider() {
-    super(NAME, VERSION, INFO);
+    private final static String NAME = "XTrustJSSE";
+    private final static String INFO = "XTrust JSSE Provider (implements trust factory with truststore validation disabled)";
+    private final static double VERSION = 1.0D;
+    public static final X509Certificate[] EMPTY_X_509_CERTIFICATES = new X509Certificate[0];
 
-    AccessController.doPrivileged(new PrivilegedAction<Object>() {
-      public Object run() {
-        put("TrustManagerFactory." + TrustManagerFactoryImpl.getAlgorithm(),
-            TrustManagerFactoryImpl.class.getName());
-        return null;
-      }
-    });
-  }
+    public XTrustProvider() {
+        super(NAME, VERSION, INFO);
 
-  /**
-   * 
-   * @return Algotirh to be used in TrustManagerFactory.getInstance().
-   */
-  public static String install() {
-    if (Security.getProvider(NAME) == null) {
-      Security.insertProviderAt(new XTrustProvider(), 2);
-      Security.setProperty("ssl.TrustManagerFactory.algorithm",
-          TrustManagerFactoryImpl.getAlgorithm());
-    }
-    return ALGORITHM;
-  }
-
-  public final static class TrustManagerFactoryImpl extends TrustManagerFactorySpi {
-    public TrustManagerFactoryImpl() {
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run() {
+                put("TrustManagerFactory." + TrustManagerFactoryImpl.getAlgorithm(),
+                        TrustManagerFactoryImpl.class.getName());
+                return null;
+            }
+        });
     }
 
-    public static String getAlgorithm() {
-      return ALGORITHM;
+    /**
+     * @return Algotirh to be used in TrustManagerFactory.getInstance().
+     */
+    public static String install() {
+        System.err.println("==================================================================");
+        System.err.println("= ALERTA! XTrustProvider.install                                 =");
+        System.err.println("= Aquesta operació deshabilita la comprovació de certificats SSL =");
+        System.err.println("= i s'eliminarà en properes versions. No emprar MAI en entorns   =");
+        System.err.println("= de producció. Instal·lar els certificats corresponents dins    =");
+        System.err.println("= cacerts o jssecacerts                                          =");
+        System.err.println("==================================================================");
+        if (Security.getProvider(NAME) == null) {
+            Security.insertProviderAt(new XTrustProvider(), 2);
+            Security.setProperty("ssl.TrustManagerFactory.algorithm",
+                    TrustManagerFactoryImpl.getAlgorithm());
+        }
+        return ALGORITHM;
     }
 
-    protected void engineInit(KeyStore keystore) throws KeyStoreException {
-    }
-
-    protected void engineInit(ManagerFactoryParameters mgrparams)
-        throws InvalidAlgorithmParameterException {
-      throw new InvalidAlgorithmParameterException(XTrustProvider.NAME
-          + " does not use ManagerFactoryParameters");
-    }
-
-    protected TrustManager[] engineGetTrustManagers() {
-      return new TrustManager[] { new X509TrustManager() {
-        public X509Certificate[] getAcceptedIssuers() {
-          return null;
+    public final static class TrustManagerFactoryImpl extends TrustManagerFactorySpi {
+        public TrustManagerFactoryImpl() {
         }
 
-        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+        public static String getAlgorithm() {
+            return ALGORITHM;
         }
 
-        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+        protected void engineInit(KeyStore keystore) throws KeyStoreException {
         }
-      } };
+
+        protected void engineInit(ManagerFactoryParameters mgrparams)
+                throws InvalidAlgorithmParameterException {
+            throw new InvalidAlgorithmParameterException(XTrustProvider.NAME
+                    + " does not use ManagerFactoryParameters");
+        }
+
+        protected TrustManager[] engineGetTrustManagers() {
+            return new TrustManager[]{new X509TrustManager() {
+                public X509Certificate[] getAcceptedIssuers() {
+                    return EMPTY_X_509_CERTIFICATES;
+                }
+
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
+
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
+            }};
+        }
     }
-  }
 }
