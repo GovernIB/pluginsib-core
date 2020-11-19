@@ -72,10 +72,10 @@ public abstract class AbstractPluginPropertiesTranslations extends AbstractPlugi
 
 	      return msgbase;
 
-	    } catch (Exception mre) {
+	    } catch (Throwable mre) {
 	      //log.error("No trob la traducció per '" + key + "'", new Exception());
 	      System.err.println("No trob la traducció per '" + key + "' a la classe " +this.getClass());
-	      return key + "_" + locale.getLanguage().toUpperCase();
+	      return "???" + key + "_" + locale.getLanguage().toUpperCase() + "???";
 	    }
 
 	  }
