@@ -848,7 +848,6 @@ public class CertificateUtils {
    * @param names the GeneralNames to be converted
    * @return an immutable Collection of alternative names
    */
-  @SuppressWarnings("restriction")
   private static Collection<TypeValue> makeAltNames( GeneralNames names) {
 
       if (names.isEmpty()) {

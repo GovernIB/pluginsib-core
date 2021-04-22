@@ -12,7 +12,6 @@ import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-import org.fundaciobit.pluginsib.core.utils.AbstractPluginProperties;
 
 /*
  *@author cfuster 

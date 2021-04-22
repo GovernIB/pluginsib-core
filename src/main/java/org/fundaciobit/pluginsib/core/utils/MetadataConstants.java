@@ -536,6 +536,49 @@ public class MetadataConstants {
         }
       );
 
+  public static final String TIPO_DOCUMENTAL_TD01_RESOLUCIO = "TD01";
+  public static final String TIPO_DOCUMENTAL_TD02_ACORD = "TD02";
+  public static final String TIPO_DOCUMENTAL_TD03_CONTRACTE = "TD03";
+  public static final String TIPO_DOCUMENTAL_TD04_CONVENI = "TD04";
+  public static final String TIPO_DOCUMENTAL_TD05_DECLARACIO = "TD05";
+  public static final String TIPO_DOCUMENTAL_TD06_COMUNICACIO = "TD06";
+  public static final String TIPO_DOCUMENTAL_TD07_NOTIFICACIO = "TD07";
+  public static final String TIPO_DOCUMENTAL_TD08_PUBLICACIO = "TD08";
+  public static final String TIPO_DOCUMENTAL_TD09_JUSTIFICANT_RECEPCIO = "TD09";
+  public static final String TIPO_DOCUMENTAL_TD19_ACTA = "TD10";
+  public static final String TIPO_DOCUMENTAL_TD11_CERTIFICAT = "TD11";
+  public static final String TIPO_DOCUMENTAL_TD12_DILIGENCIA = "TD12";
+  public static final String TIPO_DOCUMENTAL_TD13_INFORME = "TD13";
+  public static final String TIPO_DOCUMENTAL_TD14_SOLICITUD = "TD14";
+  public static final String TIPO_DOCUMENTAL_TD15_DENUNCIA = "TD15";
+  public static final String TIPO_DOCUMENTAL_TD16_ALEGACIO = "TD16";
+  public static final String TIPO_DOCUMENTAL_TD17_RECURS = "TD17";
+  public static final String TIPO_DOCUMENTAL_TD18_COMUNICACIO_CIUTADA = "TD18";
+  public static final String TIPO_DOCUMENTAL_TD19_FACTURA = "TD19";
+  public static final String TIPO_DOCUMENTAL_TD20_ALTRES_INCAUTATS = "TD20";
+  
+  public static final String TIPO_DOCUMENTAL_TD51_LLEI = "TD51";
+  public static final String TIPO_DOCUMENTAL_TD52_MOCIO = "TD52";
+  public static final String TIPO_DOCUMENTAL_TD53_INSTRUCCIO = "TD53";
+  public static final String TIPO_DOCUMENTAL_TD54_CONVOCATORIA = "TD54";
+  public static final String TIPO_DOCUMENTAL_TD55_ORDRE_DEL_DIA = "TD55";
+  public static final String TIPO_DOCUMENTAL_TD56_INFORME_DE_PONENCIA = "TD56";
+  public static final String TIPO_DOCUMENTAL_TD57_DICTAMEN_DE_COMISSIO = "TD57";
+  public static final String TIPO_DOCUMENTAL_TD58_INICIATIVA_LEGISLATIVA = "TD58";
+  public static final String TIPO_DOCUMENTAL_TD59_PREGUNTA = "TD59";
+  public static final String TIPO_DOCUMENTAL_TD60_INTERPELACIO = "TD60";
+  public static final String TIPO_DOCUMENTAL_TD61_RESPOSTA = "TD61";
+  public static final String TIPO_DOCUMENTAL_TD62_PROPOSICIO_NO_DE_LLEI = "TD62";
+  public static final String TIPO_DOCUMENTAL_TD63_ESMENA = "TD63";
+  public static final String TIPO_DOCUMENTAL_TD64_PROPOSTA_DE_RESOLUCIO = "TD64";
+  public static final String TIPO_DOCUMENTAL_TD65_COMPARECENCIA = "TD65";
+  public static final String TIPO_DOCUMENTAL_TD66_SOLICITUT_DE_INFORMACIO = "TD66";
+  public static final String TIPO_DOCUMENTAL_TD67_ESCRIT = "TD67";
+  public static final String TIPO_DOCUMENTAL_TD68_INICIATIVA_LEGISLATIVA = "TD68";
+  public static final String TIPO_DOCUMENTAL_TD69_PETICIÓ = "TD69";
+  
+  public static final String TIPO_DOCUMENTAL_TD99_ALTRES = "TD99";
+  
 
   
   public static final String EEMGDE_TIPO_DOCUMENTAL = "eEMGDE.TipoDocumental";
@@ -1337,6 +1380,8 @@ public class MetadataConstants {
     public static final String CENTILITRO = "cl";
     public static final String LITRO = "l";
     public static final String KILOLITRO = "kl";
+    
+    public static final String PIXEL = "px";
     
   }
   

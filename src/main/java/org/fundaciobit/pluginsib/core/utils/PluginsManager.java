@@ -80,17 +80,17 @@ public class PluginsManager {
           log.debug("instancePluginByClassName => " + c.getName()
             + " no es AbstractPluginProperties");
         }
-        pluginInstance = c.newInstance();
+        pluginInstance = c.getDeclaredConstructor().newInstance();
       } else {
         if (properties == null && (basePropertiesKey == null || basePropertiesKey.trim().length() == 0)) {
           log.debug("instancePluginByClassName => Instanciació simple");
-          pluginInstance = c.newInstance();
+          pluginInstance = c.getDeclaredConstructor().newInstance();
         } else {
           try {
             pluginInstance = c.getConstructor(String.class, Properties.class).newInstance(basePropertiesKey.trim(), properties);
           } catch(NoSuchMethodException nsme) {
             log.error(nsme);
-            pluginInstance = c.newInstance();
+            pluginInstance = c.getDeclaredConstructor().newInstance();
           }
         }
       }
