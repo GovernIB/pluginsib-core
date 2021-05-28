@@ -245,6 +245,7 @@ public class MetadataConstants {
       "Perfil de firma empleado en una firma con certificado electrónico.",
       new HashMap<String, String>() {
         {
+          put("BES", "Para las firmas XADES, CADES y PADES");
           put("EPES", "Para las firmas XADES, CADES y PADES");
           put("T", "Para las firmas XADES y CADES");
           put("C", "Para las firmas XADES y CADES");
