@@ -16,6 +16,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -67,70 +68,40 @@ public class CertificateUtils {
    * 
    */
   public static byte[] encodeCertificate(X509Certificate certificate) throws Exception {
-    byte[] result = null;
-    result = certificate.getEncoded();
-
-    return result;
+    return certificate.getEncoded();
   }
 
   /**
    * Obtiene el objeto X509Certificate a partir de los datos codificados de un
    * certificado
    * 
-   * @param data
-   *          Array de bytes con la informacion codificada de un certificado
+   * @param is
+   *          Stream de bytes con la informacion codificada de un certificado
    * 
    * @return Objeto X509Certificate
    * 
    */
   public static X509Certificate decodeCertificate(InputStream is) throws Exception {
-
-    X509Certificate result = null;
     CertificateFactory cf = CertificateFactory.getInstance("X.509");
-    result = (X509Certificate) cf.generateCertificate(is);
+    X509Certificate result = (X509Certificate) cf.generateCertificate(is);
     is.close();
     return result;
-
   }
 
-
-  /**
-   * 
-   * @param filePath
-   * @param passwordks
-   * @return
-   * @throws KeyStoreException
-   * @throws NoSuchProviderException
-   * @throws IOException
-   * @throws NoSuchAlgorithmException
-   * @throws CertificateException
-   * @throws FileNotFoundException
-   * @throws Exception
-   */
   public static  List<Certificate> readCertificatesOfKeystore(InputStream is,
       String passwordks) throws KeyStoreException, NoSuchProviderException, IOException,
       NoSuchAlgorithmException, CertificateException, FileNotFoundException, Exception {
     KeyStore ks = KeyStore.getInstance("pkcs12", "SunJSSE"); 
     ks.load(is,passwordks.toCharArray()); 
     
-    Enumeration<String> aliases = ks.aliases(); 
-    String alias = null;
+    Enumeration<String> aliases = ks.aliases();
     List<Certificate> certificats = new ArrayList<Certificate>();
     while(aliases.hasMoreElements()) {
-      alias = aliases.nextElement();
-      //System.out.println(certNumber +  " => Alias = ]" + alias +"[");
-      
-      //Key key = ks.getKey(alias, passwordcert.toCharArray());
-      //System.out.println("key = " + key);
-      
+      String alias = aliases.nextElement();
       Certificate[] cc = ks.getCertificateChain(alias);
       if (cc != null && cc.length != 0) {
-        for (Certificate certificate : cc) {
-          certificats.add(certificate); 
-        }
-        
+        certificats.addAll(Arrays.asList(cc));
       }
-      
     }
     
     return certificats;
@@ -150,7 +121,7 @@ public class CertificateUtils {
     Enumeration<String> aliases = keystore.aliases();
     
     while (aliases.hasMoreElements()) {
-        keyAlias = (String) aliases.nextElement();
+        keyAlias = aliases.nextElement();
     }
     
     return  new PublicCertificatePrivateKeyPair(
@@ -308,33 +279,21 @@ public class CertificateUtils {
   
   
   public static boolean isPseudonymCertificate(X509Certificate certificate) throws Exception {
-
     String politica = CertificateUtils.getCertificatePolicyId(certificate);
-
-    if (politica != null && politica.startsWith("2.16.724.1.3.5.4.")) {
-      return true;
-    } else {
-      return false;
-    }
-
+    return politica != null && politica.startsWith("2.16.724.1.3.5.4.");
   }
 
   public static String getPseudonym(X509Certificate certificate) {
-
     if (certificate == null) {
       return null;
     }
 
     final String subjectDNStr = certificate.getSubjectDN().toString();
-
     return CertificateUtils.getRDNvalue("OID.2.5.4.65", subjectDNStr);
-
   }
-  
-  
-  
 
-  /***************************************************************************
+
+  /* **************************************************************************
    * METODOS PRIVADOS
    **************************************************************************/
 
@@ -361,7 +320,7 @@ public class CertificateUtils {
 
     pos = cn.indexOf("GIVENNAME=");
     if (pos != -1) {
-      cn = cn.substring(pos + 10, cn.length());
+      cn = cn.substring(pos + 10);
     }
 
     pos = cn.indexOf(",");
@@ -371,7 +330,7 @@ public class CertificateUtils {
 
     pos = cn.indexOf("SERIALNUMBER=");
     if (pos != -1) {
-      cn = cn.substring(pos + 13, cn.length());
+      cn = cn.substring(pos + 13);
     }
 
     pos = cn.indexOf(",");
@@ -438,11 +397,6 @@ public class CertificateUtils {
   }
   */
 
-  /**
-   * 
-   * @param cert
-   * @return
-   */
   public static String getSubjectCorrectName(X509Certificate cert) {
     
     final String subjectDNStr = cert.getSubjectDN().toString();
@@ -470,22 +424,37 @@ public class CertificateUtils {
     
 
     try {
-      // OID.1.3.6.1.4.1.5734.1.1=ANTONI, OID.1.3.6.1.4.1.5734.1.2=NADAL,
+      // FNMT EIDAS
+      // OID.1.3.6.1.4.1.5734.1.1=ANTONI
+      // OID.1.3.6.1.4.1.5734.1.2=NADAL
       // OID.1.3.6.1.4.1.5734.1.3=BENNASAR
+
+      // CAMERFIRMA
+      // OID.1.3.6.1.4.1.17326.30.7=JUAN ANTONIO
+      // OID.1.3.6.1.4.1.17326.30.8=CÁMARA
+      // OID.1.3.6.1.4.1.17326.30.9=ESPAÑOL
+
       Map<String, String> values = getAlternativeNamesOfExtension(cert, SUBJECT_ALT_NAME_OID);
-      
-      String nom, llinatge1, llinatge2;
-      
-      if (!values.isEmpty() && ((nom = values.get("OID.1.3.6.1.4.1.5734.1.1")) != null)
-          && ((llinatge1 = values.get("OID.1.3.6.1.4.1.5734.1.2")) != null)
-          && ((llinatge2 = values.get("OID.1.3.6.1.4.1.5734.1.3")) != null)) {
-        
-        
-        return nom + " " + llinatge1 + " " + llinatge2;
+
+      if (!values.isEmpty()) {
+
+        if (values.get("OID.1.3.6.1.4.1.5734.1.1") != null) {
+
+          return values.get("OID.1.3.6.1.4.1.5734.1.1") + " "
+                  + values.get("OID.1.3.6.1.4.1.5734.1.2") + " "
+                  + values.get("OID.1.3.6.1.4.1.5734.1.3");
+
+        } else if (values.get("OID.1.3.6.1.4.1.17326.30.7") != null) {
+
+          return values.get("OID.1.3.6.1.4.1.17326.30.7") + " "
+                  + values.get("OID.1.3.6.1.4.1.17326.30.8") + " "
+                  + values.get("OID.1.3.6.1.4.1.17326.30.9");
+
+        }
       }
       
     } catch(Exception e) {
-      e.printStackTrace();
+      log.warning(e.getMessage());
     }
 
 
@@ -669,7 +638,6 @@ public class CertificateUtils {
   //@SuppressWarnings("restriction")
   public static String getCertificatePolicyId(X509Certificate cert) throws Exception {
 
-    String oid = null;
     byte[] extvalue = cert.getExtensionValue("2.5.29.32");
     if (extvalue != null) {
 
@@ -690,7 +658,7 @@ public class CertificateUtils {
       }
     }
 
-    return oid;
+    return null;
   }
   
   
@@ -706,12 +674,7 @@ public class CertificateUtils {
         
     return map.get("OID.2.16.724.1.3.5.3.2.10"); 
   }
-  
-  /**
-   * 
-   * @param cert
-   * @return
-   */
+
   public static String getCarrec(X509Certificate cert) throws Exception {
     Map<String, String> map = getAlternativeNamesOfExtension(cert, SUBJECT_ALT_NAME_OID);
     String carrec = map.get("OID.2.16.724.1.3.5.3.2.11");
@@ -728,15 +691,9 @@ public class CertificateUtils {
     String nif = map.get("OID.1.3.6.1.4.1.5734.1.7");
     if (nif == null) {
 
-      // for(String key : map.keySet()) {
-      // System.err.println(" KEY[" + key + "] => " + map.get(key));
-      // }
 
       final String subjectDNStr = cert.getSubjectDN().toString();
-      // System.err.println("SUBJECT => " + subjectDNStr);
-
       String org = getRDNvalue("O", subjectDNStr);
-      // System.err.println("ORG => " + org);
 
       String admin_id_orgorg = getRDNvalue("OID.2.5.4.97", subjectDNStr); // 2.5.4.97 =
                                                                           // VATES-Q0100000I
@@ -807,10 +764,8 @@ public class CertificateUtils {
         col = makeAltNames(names);
       } catch (IOException ioe) {
         // should not occur
-        col = Collections.<TypeValue> emptySet();
+        col = Collections.emptySet();
       }
-
-     
 
       for (TypeValue typeValue : col) {
 
@@ -822,15 +777,12 @@ public class CertificateUtils {
           }
 
         }
-
       }
 
       return values;
 
     } catch (Exception ioe) {
-      CertificateParsingException cpe = new CertificateParsingException();
-      cpe.initCause(ioe);
-      throw cpe;
+      throw new CertificateParsingException(ioe);
     }
   }
 
@@ -842,8 +794,8 @@ public class CertificateUtils {
   /**
    * Converts a GeneralNames structure into an immutable Collection of
    * alternative names (subject or issuer) in the form required by
-   * {@link #getSubjectAlternativeNames} or
-   * {@link #getIssuerAlternativeNames}.
+   * {@link X509Certificate#getSubjectAlternativeNames} or
+   * {@link X509Certificate#getIssuerAlternativeNames}.
    *
    * @param names the GeneralNames to be converted
    * @return an immutable Collection of alternative names
@@ -855,12 +807,9 @@ public class CertificateUtils {
       }
       List<TypeValue> newNames = new ArrayList<TypeValue>();
       for (GeneralName gname : names.names()) {
-          int type;
-          String value;
           GeneralNameInterface name = gname.getName();
-          //List<Object> nameEntry = new ArrayList<Object>(2);
-          //nameEntry.add(
-          type= Integer.valueOf(name.getType());
+          int type= name.getType();
+          String value;
           switch (name.getType()) {
           case GeneralNameInterface.NAME_RFC822:
               value = ((RFC822Name) name).getName();
@@ -888,9 +837,6 @@ public class CertificateUtils {
               break;
           default:
               // add DER encoded form
-            
-             
-            
               DerOutputStream derOut = new DerOutputStream();
               try {
                   name.encode(derOut);
@@ -907,30 +853,15 @@ public class CertificateUtils {
       return Collections.unmodifiableCollection(newNames);
   }
 
-
-  
-  
-  
   private static class TypeValue {
-    
     final int type;
-    
     final String value;
-    
-    
-    
-      
-    /**
-       * @param type
-       * @param value
-       */
+
       public TypeValue(int type, String value) {
-        super();
         this.type = type;
         this.value = value;
       }
-  
-  
+
     public int getType() {
       return type;
     }
@@ -938,7 +869,6 @@ public class CertificateUtils {
     public String getValue() {
       return value;
     }
-
 
   }
   
@@ -966,7 +896,7 @@ public class CertificateUtils {
    */
   private static class SubjectAlternativeNameExtension extends Extension
   implements CertAttrSet<String> {
-      /**
+      /*
        * Identifier for this attribute, to be used with the
        * get, set, delete methods of Certificate, x509 type.
        */
@@ -981,7 +911,7 @@ public class CertificateUtils {
       public static final String SUBJECT_NAME = "subject_name";
 
       // private data members
-      GeneralNames        names = null;
+      GeneralNames names;
 
       // Encode this extension
       private void encodeThis() throws IOException {
@@ -994,7 +924,7 @@ public class CertificateUtils {
           this.extensionValue = os.toByteArray();
       }
 
-      /**
+      /*
        * Create a SubjectAlternativeNameExtension with the passed GeneralNames.
        * The extension is marked non-critical.
        *
@@ -1008,7 +938,7 @@ public class CertificateUtils {
       }
       */
 
-      /**
+      /*
        * Create a SubjectAlternativeNameExtension with the specified
        * criticality and GeneralNames.
        *
@@ -1026,7 +956,7 @@ public class CertificateUtils {
       }
       */
 
-      /**
+      /*
        * Create a default SubjectAlternativeNameExtension. The extension
        * is marked non-critical.
        */
@@ -1049,7 +979,7 @@ public class CertificateUtils {
       public SubjectAlternativeNameExtension(Boolean critical, Object value)
       throws IOException {
           this.extensionId = PKIXExtensions.SubjectAlternativeName_Id;
-          this.critical = critical.booleanValue();
+          this.critical = critical;
 
           this.extensionValue = (byte[]) value;
           DerValue val = new DerValue(this.extensionValue);
@@ -1066,16 +996,16 @@ public class CertificateUtils {
        */
       public String toString() {
 
-          String result = super.toString() + "SubjectAlternativeName [\n";
+          StringBuilder result = new StringBuilder(super.toString() + "SubjectAlternativeName [\n");
           if(names == null) {
-              result += "  null\n";
+              result.append("  null\n");
           } else {
               for(GeneralName name: names.names()) {
-                  result += "  "+name+"\n";
+                  result.append("  ").append(name).append("\n");
               }
           }
-          result += "]\n";
-          return result;
+          result.append("]\n");
+          return result.toString();
       }
 
       /**
@@ -1155,7 +1085,5 @@ public class CertificateUtils {
           return (NAME);
       }
   }
-  
-  
 
 }

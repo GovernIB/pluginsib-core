@@ -36,7 +36,9 @@ public class PluginsManager {
   public static Object instancePluginByProperty(String propertyPlugin,
       String basePropertiesKey, java.util.Properties properties) {
     // Valor de la Clau
-    String className = properties.getProperty(propertyPlugin.trim());
+    String className = properties != null
+            ? properties.getProperty(propertyPlugin.trim())
+            : System.getProperty(propertyPlugin.trim());
     if (className == null || className.trim().length() == 0) {
       return null;
     }
