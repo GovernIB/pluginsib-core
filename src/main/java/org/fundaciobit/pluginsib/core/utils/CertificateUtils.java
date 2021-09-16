@@ -236,13 +236,9 @@ public class CertificateUtils {
       if (nif == null) {
         // Per certificats tipus FNMT
         String cadena = map.get("CN");
-        if (cadena == null) {
-          nif = null;
-        } else {
+        if (cadena != null) {
           int finom = cadena.indexOf(" - NIF ");
-          if (finom == -1) {
-            nif = null;
-          } else {
+          if (finom != -1) {
             int iniciNif = finom + " - NIF ".length();
             nif = cadena.substring(iniciNif);
           }
@@ -258,25 +254,8 @@ public class CertificateUtils {
     }
 
     return nif;
-
-    /*
-     * String dn = certificate.getSubjectDN().getName().trim();
-     * 
-     * 
-     * 
-     * int index = dn.indexOf("SERIALNUMBER"); if (index != -1) { index =
-     * dn.indexOf('=',index); int index2 = dn.indexOf(',', index);
-     * 
-     * nif = dn.substring(index + 1, index2).trim();
-     * 
-     * }
-     * 
-     * }
-     */
-
   }
-  
-  
+
   
   public static boolean isPseudonymCertificate(X509Certificate certificate) throws Exception {
     String politica = CertificateUtils.getCertificatePolicyId(certificate);

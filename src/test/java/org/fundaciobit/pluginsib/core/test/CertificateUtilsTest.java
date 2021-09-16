@@ -19,6 +19,15 @@ public class CertificateUtilsTest {
     }
 
     @Test
+    public void testFirmaProfesionalPnoes() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/firmaprofesional-pnoes.cer");
+        X509Certificate cert = CertificateUtils.decodeCertificate(is);
+
+        Assert.assertEquals("X9999999J", CertificateUtils.getDNI(cert));
+        Assert.assertEquals("Nombre Apellido1 Apellido2", CertificateUtils.getSubjectCorrectName(cert));
+    }
+
+    @Test
     public void testIzenpe() throws Exception {
         InputStream is = getClass().getResourceAsStream("/izenpe_pf.cer");
         X509Certificate cert = CertificateUtils.decodeCertificate(is);
