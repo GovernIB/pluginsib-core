@@ -57,12 +57,15 @@ public class CertificateUtils {
 
   private final static Logger log = Logger.getLogger(CertificateUtils.class.getName());
 
+  public static final String DNI_PATTERN_PROPERTY = CertificateUtils.class.getName() + ".dniPattern";
+
   public static final String DEFAULT_DNI_PATTERN = "^(?:PNOES-|IDCES-|IDCFJ-)?([X-Z]?[0-9]{7,8}[A-Z])$";
 
   private final static DNIExtractor dniExtractor;
 
+
   static {
-    String dniPattern = System.getProperty(CertificateUtils.class.getName() + ".dniPattern", DEFAULT_DNI_PATTERN);
+    String dniPattern = System.getProperty(DNI_PATTERN_PROPERTY, DEFAULT_DNI_PATTERN);
     dniExtractor = new PatternDNIExtractor(dniPattern);
   }
 
