@@ -1,19 +1,26 @@
 package org.fundaciobit.pluginsib.core.test;
 
+
 import org.fundaciobit.pluginsib.core.utils.CertificateUtils;
+import org.fundaciobit.pluginsib.core.utils.ComposedPatternDNIExtractor;
 import org.fundaciobit.pluginsib.core.utils.DNIExtractor;
-import org.fundaciobit.pluginsib.core.utils.PatternDNIExtractor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PatternDNIExtractorTest {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ComposedPatternDNIExtractorTest {
 
     private DNIExtractor extractor;
 
     @Before
     public void setup() {
-        extractor = new PatternDNIExtractor(CertificateUtils.DEFAULT_DNI_PATTERN);
+        List<String> patterns = new ArrayList<String>();
+        patterns.add(CertificateUtils.DEFAULT_DNI_PATTERN);
+        patterns.add("^(UNDOSTRES)$");
+        extractor = new ComposedPatternDNIExtractor(patterns);
     }
 
     @Test
@@ -44,5 +51,10 @@ public class PatternDNIExtractorTest {
     @Test
     public void testNull_IDCES_NotNif() {
         Assert.assertNull(extractor.extract("IDCES-1234567"));
+    }
+
+    @Test
+    public void testUNDOSTRES() {
+        Assert.assertEquals("UNDOSTRES", extractor.extract("UNDOSTRES"));
     }
 }

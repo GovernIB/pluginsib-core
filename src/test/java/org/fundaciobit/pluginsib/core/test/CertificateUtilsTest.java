@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import java.io.InputStream;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.List;
 
 public class CertificateUtilsTest {
 
@@ -16,6 +18,28 @@ public class CertificateUtilsTest {
 
         Assert.assertEquals("99999999R", CertificateUtils.getDNI(cert));
         Assert.assertEquals("PRUEBAS EIDAS CERTIFICADO", CertificateUtils.getSubjectCorrectName(cert));
+    }
+
+    @Test
+    public void testFnmtCustomPatternsDNI() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/fnmt_pf.cer");
+        X509Certificate cert = CertificateUtils.decodeCertificate(is);
+
+        String[] patterns = {"^([0-9]{8}[A-Z])$", "^IDCES-([0-9]{8}[A-Z])$"};
+        List<String> patternsList = Arrays.asList(patterns);
+
+        Assert.assertEquals("99999999R", CertificateUtils.getDNI(cert, patternsList));
+    }
+
+    @Test
+    public void testFnmtCustomPatternsOnlyNumber() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/fnmt_pf.cer");
+        X509Certificate cert = CertificateUtils.decodeCertificate(is);
+
+        String[] patterns = {"^IDCES-([0-9]{8})[A-Z]$"};
+        List<String> patternsList = Arrays.asList(patterns);
+
+        Assert.assertEquals("99999999", CertificateUtils.getDNI(cert, patternsList));
     }
 
     @Test
@@ -85,15 +109,4 @@ public class CertificateUtilsTest {
         Assert.assertEquals("R0599999J", organization[0]);
         Assert.assertEquals("[SOLO PRUEBAS] ENTIDAD", organization[1]);
     }
-
-    @Test
-    public void testBeworPf() throws Exception {
-        InputStream is = getClass().getResourceAsStream("/bewor_pf.cer");
-        X509Certificate cert = CertificateUtils.decodeCertificate(is);
-
-        Assert.assertEquals("99999999R", CertificateUtils.getDNI(cert));
-        Assert.assertEquals("TEST_Nombre TEST_Primerapellido TEST_Segundoapellido",
-                CertificateUtils.getSubjectCorrectName(cert));
-    }
-
 }

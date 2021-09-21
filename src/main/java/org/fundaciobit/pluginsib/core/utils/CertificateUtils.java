@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,8 @@ import java.util.List;
 
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
 import javax.naming.ldap.LdapName;
@@ -57,16 +61,17 @@ public class CertificateUtils {
 
   private final static Logger log = Logger.getLogger(CertificateUtils.class.getName());
 
-  public static final String DNI_PATTERN_PROPERTY = CertificateUtils.class.getName() + ".dniPattern";
+  /**
+   * Patró emprat per defecte per extreure el NIF/NIE de l'atribut SERIALNUMBER del Subject del certificat.
+   * El NIF/NIE ha de ser el grup 1. Per tant si es fan altres grups han d'anar marcats com a "non-capturing" amb "(?:".
+   * Per veure els formats, veure l'apartat 5.1.3 de ETSI EN 319 412-1 V1.4.4
+   */
+  public static final String DEFAULT_DNI_PATTERN = "^(?:(?:PAS|IDC|PNO|TAX|TIN)ES-)?([X-Z]?[0-9]{7,8}[A-Z])$";
 
-  public static final String DEFAULT_DNI_PATTERN = "^(?:PNOES-|IDCES-|IDCFJ-)?([X-Z]?[0-9]{7,8}[A-Z])$";
-
-  private final static DNIExtractor dniExtractor;
-
+  private final static DNIExtractor defaultDNIExtractor;
 
   static {
-    String dniPattern = System.getProperty(DNI_PATTERN_PROPERTY, DEFAULT_DNI_PATTERN);
-    dniExtractor = new PatternDNIExtractor(dniPattern);
+    defaultDNIExtractor = new PatternDNIExtractor(DEFAULT_DNI_PATTERN, false);
   }
 
   /**
@@ -216,41 +221,62 @@ public class CertificateUtils {
    * @return String con el DNI del usuario
    */
   public static String getDNI(X509Certificate certificate) {
+    return getDNIWithExtractor(certificate, defaultDNIExtractor);
+  }
 
-      if (certificate == null) {
-          return null;
-      }
+  private static final ConcurrentMap<List<String>, DNIExtractor> extractorCache
+          = new ConcurrentHashMap<List<String>, DNIExtractor>();
 
-      HashMap<String, String> map = new HashMap<String, String>();
+  /**
+   * Recupera el DNI a partir de los datos del certificado
+   *
+   * @param certificate
+   *          Objeto X509Certificate
+   * @return String con el DNI del usuario
+   */
+  public static String getDNI(X509Certificate certificate, List<String> patterns) {
+    DNIExtractor extractor = extractorCache.get(patterns);
+    if (extractor == null) {
+      extractor = new ComposedPatternDNIExtractor(patterns);
+      extractorCache.putIfAbsent(patterns, extractor);
+    }
 
+    return getDNIWithExtractor(certificate, extractor);
+  }
 
-      String value = certificate.getSubjectDN().getName().trim();
+  private static String getDNIWithExtractor(X509Certificate certificate, DNIExtractor dniExtractor) {
+    if (certificate == null) {
+        return null;
+    }
 
-      String[] split = value.split(",");
-      for (int i = 0; i < split.length; i++) {
-          if (split[i].indexOf('=') != -1) {
-              String[] split2 = split[i].split("=");
-              if (split2.length == 2) {
-                  map.put(split2[0].trim(), split2[1].trim());
-              }
-          }
-      }
-      String nif = map.get("SERIALNUMBER");
-      if (nif == null) {
-          // Per certificats tipus FNMT
-          String cadena = map.get("CN");
-          if (cadena != null) {
-              int finom = cadena.indexOf(" - NIF ");
-              if (finom != -1) {
-                  int iniciNif = finom + " - NIF ".length();
-                  nif = cadena.substring(iniciNif);
-              }
-          }
-      } else {
-          nif = dniExtractor.extract(nif);
-      }
+    HashMap<String, String> map = new HashMap<String, String>();
+    String value = certificate.getSubjectDN().getName().trim();
 
-      return nif;
+    String[] split = value.split(",");
+    for (int i = 0; i < split.length; i++) {
+        if (split[i].indexOf('=') != -1) {
+            String[] split2 = split[i].split("=");
+            if (split2.length == 2) {
+                map.put(split2[0].trim(), split2[1].trim());
+            }
+        }
+    }
+    String nif = map.get("SERIALNUMBER");
+    if (nif == null) {
+        // Per certificats tipus FNMT
+        String cadena = map.get("CN");
+        if (cadena != null) {
+            int finom = cadena.indexOf(" - NIF ");
+            if (finom != -1) {
+                int iniciNif = finom + " - NIF ".length();
+                nif = cadena.substring(iniciNif);
+            }
+        }
+    } else {
+        nif = dniExtractor.extract(nif);
+    }
+
+    return nif;
   }
 
 
