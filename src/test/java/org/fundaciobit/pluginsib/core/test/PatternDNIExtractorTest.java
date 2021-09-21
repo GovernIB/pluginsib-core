@@ -13,7 +13,7 @@ public class PatternDNIExtractorTest {
 
     @Before
     public void setup() {
-        extractor = new PatternDNIExtractor(CertificateUtils.DEFAULT_DNI_PATTERN);
+        extractor = new PatternDNIExtractor(CertificateUtils.DEFAULT_DNI_PATTERN, true);
     }
 
     @Test
