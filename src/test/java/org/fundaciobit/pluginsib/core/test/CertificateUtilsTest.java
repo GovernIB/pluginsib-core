@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import java.io.InputStream;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.List;
 
 public class CertificateUtilsTest {
 
@@ -19,12 +21,79 @@ public class CertificateUtilsTest {
     }
 
     @Test
+    public void testFnmtCustomPatternsDNI() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/fnmt_pf.cer");
+        X509Certificate cert = CertificateUtils.decodeCertificate(is);
+
+        String[] patterns = {"^([0-9]{8}[A-Z])$", "^IDCES-([0-9]{8}[A-Z])$"};
+        List<String> patternsList = Arrays.asList(patterns);
+
+        Assert.assertEquals("99999999R", CertificateUtils.getDNI(cert, patternsList));
+    }
+
+    @Test
+    public void testFnmtCustomPatternsOnlyNumber() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/fnmt_pf.cer");
+        X509Certificate cert = CertificateUtils.decodeCertificate(is);
+
+        String[] patterns = {"^IDCES-([0-9]{8})[A-Z]$"};
+        List<String> patternsList = Arrays.asList(patterns);
+
+        Assert.assertEquals("99999999", CertificateUtils.getDNI(cert, patternsList));
+    }
+
+    @Test
+    public void testFirmaProfesionalPnoes() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/firmaprofesional-pnoes.cer");
+        X509Certificate cert = CertificateUtils.decodeCertificate(is);
+
+        Assert.assertEquals("X9999999J", CertificateUtils.getDNI(cert));
+        Assert.assertEquals("Nombre Apellido1 Apellido2", CertificateUtils.getSubjectCorrectName(cert));
+    }
+
+    @Test
     public void testIzenpe() throws Exception {
         InputStream is = getClass().getResourceAsStream("/izenpe_pf.cer");
         X509Certificate cert = CertificateUtils.decodeCertificate(is);
 
         Assert.assertEquals("99999990S", CertificateUtils.getDNI(cert));
         Assert.assertEquals("CIUDADANO FICTICIO ACTIVO", CertificateUtils.getSubjectCorrectName(cert));
+    }
+
+    @Test
+    public void testDNIv2Firma() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/Ciudadano_firma_activoV2.cer");
+        X509Certificate cert = CertificateUtils.decodeCertificate(is);
+
+        Assert.assertEquals("99999018D", CertificateUtils.getDNI(cert));
+        Assert.assertEquals("Ciudadano Ficticio Activo", CertificateUtils.getSubjectCorrectName(cert));
+    }
+
+    @Test
+    public void testDNIv2Autenticacion() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/Ciudadano_autenticación_activoV2.cer");
+        X509Certificate cert = CertificateUtils.decodeCertificate(is);
+
+        Assert.assertEquals("99999018D", CertificateUtils.getDNI(cert));
+        Assert.assertEquals("Ciudadano Ficticio Activo", CertificateUtils.getSubjectCorrectName(cert));
+    }
+
+    @Test
+    public void testDNIv3Firma() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/Ciudadano_firma_activo.cer");
+        X509Certificate cert = CertificateUtils.decodeCertificate(is);
+
+        Assert.assertEquals("99999018D", CertificateUtils.getDNI(cert));
+        Assert.assertEquals("Ciudadano Ficticio Activo", CertificateUtils.getSubjectCorrectName(cert));
+    }
+
+    @Test
+    public void testDNIv3Autenticacion() throws Exception {
+        InputStream is = getClass().getResourceAsStream("/Ciudadano_autenticación_activo.cer");
+        X509Certificate cert = CertificateUtils.decodeCertificate(is);
+
+        Assert.assertEquals("99999018D", CertificateUtils.getDNI(cert));
+        Assert.assertEquals("Ciudadano Ficticio Activo", CertificateUtils.getSubjectCorrectName(cert));
     }
 
     @Test

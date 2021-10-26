@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,8 @@ import java.util.List;
 
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
 import javax.naming.ldap.LdapName;
@@ -58,14 +62,27 @@ public class CertificateUtils {
   private final static Logger log = Logger.getLogger(CertificateUtils.class.getName());
 
   /**
+   * Patró emprat per defecte per extreure el NIF/NIE de l'atribut SERIALNUMBER del Subject del certificat.
+   * El NIF/NIE ha de ser el grup 1. Per tant si es fan altres grups han d'anar marcats com a "non-capturing" amb "(?:".
+   * Per veure els formats, veure l'apartat 5.1.3 de ETSI EN 319 412-1 V1.4.4
+   */
+  public static final String DEFAULT_DNI_PATTERN = "^(?:(?:PAS|IDC|PNO|TAX|TIN)ES-)?([X-Z]?[0-9]{7,8}[A-Z])$";
+
+  private final static DNIExtractor defaultDNIExtractor;
+
+  static {
+    defaultDNIExtractor = new PatternDNIExtractor(DEFAULT_DNI_PATTERN, false);
+  }
+
+  /**
    * Codifica la informacion almacenada en un objeto X509Certificate
-   * 
+   *
    * @param certificate
    *          Objeto X509Certificate con la informacion de un certificado de
    *          usuario
-   * 
+   *
    * @return Array de bytes con la informacion codificada
-   * 
+   *
    */
   public static byte[] encodeCertificate(X509Certificate certificate) throws Exception {
     return certificate.getEncoded();
@@ -74,12 +91,12 @@ public class CertificateUtils {
   /**
    * Obtiene el objeto X509Certificate a partir de los datos codificados de un
    * certificado
-   * 
+   *
    * @param is
    *          Stream de bytes con la informacion codificada de un certificado
-   * 
+   *
    * @return Objeto X509Certificate
-   * 
+   *
    */
   public static X509Certificate decodeCertificate(InputStream is) throws Exception {
     CertificateFactory cf = CertificateFactory.getInstance("X.509");
@@ -91,9 +108,9 @@ public class CertificateUtils {
   public static  List<Certificate> readCertificatesOfKeystore(InputStream is,
       String passwordks) throws KeyStoreException, NoSuchProviderException, IOException,
       NoSuchAlgorithmException, CertificateException, FileNotFoundException, Exception {
-    KeyStore ks = KeyStore.getInstance("pkcs12", "SunJSSE"); 
-    ks.load(is,passwordks.toCharArray()); 
-    
+    KeyStore ks = KeyStore.getInstance("pkcs12", "SunJSSE");
+    ks.load(is,passwordks.toCharArray());
+
     Enumeration<String> aliases = ks.aliases();
     List<Certificate> certificats = new ArrayList<Certificate>();
     while(aliases.hasMoreElements()) {
@@ -103,39 +120,39 @@ public class CertificateUtils {
         certificats.addAll(Arrays.asList(cc));
       }
     }
-    
+
     return certificats;
   }
-  
-  
-  
+
+
+
   public static  PublicCertificatePrivateKeyPair readPKCS12(InputStream p12, String p12Password) throws KeyStoreException,
     IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {
-  
-      
+
+
     String keyAlias= null;
     KeyStore keystore = KeyStore.getInstance("PKCS12");
     keystore.load(p12, p12Password.toCharArray());
-    
-    
+
+
     Enumeration<String> aliases = keystore.aliases();
-    
+
     while (aliases.hasMoreElements()) {
         keyAlias = aliases.nextElement();
     }
-    
+
     return  new PublicCertificatePrivateKeyPair(
         (X509Certificate) keystore.getCertificate(keyAlias),
         (PrivateKey)keystore.getKey(keyAlias, p12Password.toCharArray())
         );
-  
+
   }
-  
-  
+
+
 
   /**
    * Recupera el commonName a partir de los datos del certificado
-   * 
+   *
    * @param certificate
    *          Objeto X509Certificate
    * @return String con el commonName del usuario
@@ -198,86 +215,71 @@ public class CertificateUtils {
 
   /**
    * Recupera el DNI a partir de los datos del certificado
-   * 
+   *
    * @param certificate
    *          Objeto X509Certificate
    * @return String con el DNI del usuario
    */
   public static String getDNI(X509Certificate certificate) {
+    return getDNIWithExtractor(certificate, defaultDNIExtractor);
+  }
 
-    String nif;
+  private static final ConcurrentMap<List<String>, DNIExtractor> extractorCache
+          = new ConcurrentHashMap<List<String>, DNIExtractor>();
 
-    if (certificate != null) {
+  /**
+   * Recupera el DNI a partir de los datos del certificado
+   *
+   * @param certificate
+   *          Objeto X509Certificate
+   * @return String con el DNI del usuario
+   */
+  public static String getDNI(X509Certificate certificate, List<String> patterns) {
+    DNIExtractor extractor = extractorCache.get(patterns);
+    if (extractor == null) {
+      extractor = new ComposedPatternDNIExtractor(patterns);
+      extractorCache.putIfAbsent(patterns, extractor);
+    }
 
-      HashMap<String, String> map = new HashMap<String, String>();
-      // TODO emprar mètode getRDNvalue() per obtenir SERIALNUMBER
+    return getDNIWithExtractor(certificate, extractor);
+  }
 
-      final boolean debug = log.isLoggable(java.util.logging.Level.FINE);
+  private static String getDNIWithExtractor(X509Certificate certificate, DNIExtractor dniExtractor) {
+    if (certificate == null) {
+        return null;
+    }
 
-      String value = certificate.getSubjectDN().getName().trim();
-      if (debug) {
-        log.fine("========================================");
-        log.fine("VALUES = ]" + value + "[");
-      }
+    HashMap<String, String> map = new HashMap<String, String>();
+    String value = certificate.getSubjectDN().getName().trim();
 
-      String[] split = value.split(",");
-      for (int i = 0; i < split.length; i++) {
-        if (debug) {
-          log.fine("SPLIT[" + i + "] = ]" + split[i] + "[");
-        }
+    String[] split = value.split(",");
+    for (int i = 0; i < split.length; i++) {
         if (split[i].indexOf('=') != -1) {
-          String[] split2 = split[i].split("=");
-          if (split2.length == 2) {
-            map.put(split2[0].trim(), split2[1].trim());
-          }
+            String[] split2 = split[i].split("=");
+            if (split2.length == 2) {
+                map.put(split2[0].trim(), split2[1].trim());
+            }
         }
-      }
-      nif = map.get("SERIALNUMBER");
-      if (nif == null) {
+    }
+    String nif = map.get("SERIALNUMBER");
+    if (nif == null) {
         // Per certificats tipus FNMT
         String cadena = map.get("CN");
-        if (cadena == null) {
-          nif = null;
-        } else {
-          int finom = cadena.indexOf(" - NIF ");
-          if (finom == -1) {
-            nif = null;
-          } else {
-            int iniciNif = finom + " - NIF ".length();
-            nif = cadena.substring(iniciNif);
-          }
+        if (cadena != null) {
+            int finom = cadena.indexOf(" - NIF ");
+            if (finom != -1) {
+                int iniciNif = finom + " - NIF ".length();
+                nif = cadena.substring(iniciNif);
+            }
         }
-      } else {
-        // Nous certificats FNMT el NIF comença per "IDCES-"
-        if (nif.startsWith("IDCES-")) {
-          nif = nif.substring("IDCES-".length());
-        }
-      }
     } else {
-      nif = null;
+        nif = dniExtractor.extract(nif);
     }
 
     return nif;
-
-    /*
-     * String dn = certificate.getSubjectDN().getName().trim();
-     * 
-     * 
-     * 
-     * int index = dn.indexOf("SERIALNUMBER"); if (index != -1) { index =
-     * dn.indexOf('=',index); int index2 = dn.indexOf(',', index);
-     * 
-     * nif = dn.substring(index + 1, index2).trim();
-     * 
-     * }
-     * 
-     * }
-     */
-
   }
-  
-  
-  
+
+
   public static boolean isPseudonymCertificate(X509Certificate certificate) throws Exception {
     String politica = CertificateUtils.getCertificatePolicyId(certificate);
     return politica != null && politica.startsWith("2.16.724.1.3.5.4.");
@@ -398,11 +400,11 @@ public class CertificateUtils {
   */
 
   public static String getSubjectCorrectName(X509Certificate cert) {
-    
+
     final String subjectDNStr = cert.getSubjectDN().toString();
-    
+
     String certName = getCN(subjectDNStr);
-    
+
     // Parche pels certificat DNIe (eliminar FIRMA i AUTENTICACION)
     {
       final String[] dnie = { " (FIRMA)", " (AUTENTICACIÓN)" };
@@ -413,6 +415,9 @@ public class CertificateUtils {
           certName = certName.replace(tipusDNIe, "");
           // Posar Nom davant
           pos = certName.lastIndexOf(',');
+          if (pos == -1) { // pels DNIv2
+            pos = certName.lastIndexOf('/');
+          }
           if (pos != -1) {
             String nom = certName.substring(pos + 1).trim();
             String llinatges = certName.substring(0, pos).trim();
@@ -421,7 +426,7 @@ public class CertificateUtils {
         }
       }
     }
-    
+
 
     try {
       // FNMT EIDAS
@@ -452,13 +457,13 @@ public class CertificateUtils {
 
         }
       }
-      
+
     } catch(Exception e) {
       log.warning(e.getMessage());
     }
 
 
-    
+
 
     // Parche pels certificats FNMT que contenen la paraula NOMBRE al principi i
     // el NIF del Firmant
@@ -474,7 +479,7 @@ public class CertificateUtils {
     if (posDNI != -1) {
       certName = certName.substring(0, posDNI);
     }
-   
+
     // sn
     String llinatges = getRDNvalue("surname", subjectDNStr);
 
@@ -489,14 +494,14 @@ public class CertificateUtils {
 
       if (nom != null && nom.trim().length() != 0) {
         String fullName = nom + " " + llinatges;
-        
+
         if (fullName.length() >= certName.length()) {
           return fullName;
         }
       }
 
     }
-    
+
 
     return certName;
 
@@ -506,7 +511,7 @@ public class CertificateUtils {
    * Obtiene el nombre com&uacute;n (Common Name, CN) del titular de un
    * certificado X.509. Si no se encuentra el CN, se devuelve la unidad
    * organizativa (Organization Unit, OU).
-   * 
+   *
    * @param c
    *          Certificado X.509 del cual queremos obtener el nombre com&uacute;n
    * @return Nombre com&uacute;n (Common Name, CN) del titular de un certificado
@@ -523,7 +528,7 @@ public class CertificateUtils {
    * Obtiene el nombre com&uacute;n (Common Name, CN) de un <i>Principal</i>
    * X.400. Si no se encuentra el CN, se devuelve la unidad organizativa
    * (Organization Unit, OU).
-   * 
+   *
    * @param principal
    *          <i>Principal</i> del cual queremos obtener el nombre com&uacute;n
    * @return Nombre com&uacute;n (Common Name, CN) de un <i>Principal</i> X.400
@@ -557,7 +562,7 @@ public class CertificateUtils {
    * el nombre del RDN, el igual, ni las posibles comillas que envuelvan el
    * valor. La funci&oacute;n no es sensible a la capitalizaci&oacute;n del RDN.
    * Si no se encuentra, se devuelve {@code null}.
-   * 
+   *
    * @param rdn
    *          RDN que deseamos encontrar.
    * @param principal
@@ -625,9 +630,9 @@ public class CertificateUtils {
 
     return null;
   }
-  
-  
-  
+
+
+
   /**
    * Get a certificate policy ID from a certificate policies extension
    *
@@ -648,7 +653,7 @@ public class CertificateUtils {
         DerValue[] secs = octed.getData().getSequence(0);
 
         String fulloid = secs[0].toString();
-        
+
         if (fulloid != null && fulloid.startsWith("OID.")) {
           return fulloid.substring(4);
         }
@@ -660,19 +665,19 @@ public class CertificateUtils {
 
     return null;
   }
-  
-  
-  
-  
 
-  
+
+
+
+
+
   private static final String SUBJECT_ALT_NAME_OID = "2.5.29.17";
-  
+
   public static String getUnitatAdministrativa(X509Certificate cert) throws Exception {
-    
+
     Map<String, String> map = getAlternativeNamesOfExtension(cert, SUBJECT_ALT_NAME_OID);
-        
-    return map.get("OID.2.16.724.1.3.5.3.2.10"); 
+
+    return map.get("OID.2.16.724.1.3.5.3.2.10");
   }
 
   public static String getCarrec(X509Certificate cert) throws Exception {
@@ -683,9 +688,9 @@ public class CertificateUtils {
     }
     return carrec;
   }
-  
-  
-  
+
+
+
   public static String[] getEmpresaNIFNom(X509Certificate cert) throws Exception {
     Map<String, String> map = getAlternativeNamesOfExtension(cert, SUBJECT_ALT_NAME_OID);
     String nif = map.get("OID.1.3.6.1.4.1.5734.1.7");
@@ -721,18 +726,18 @@ public class CertificateUtils {
 
       return new String[] { admin_id_orgorg, org };
     }
-    
+
     int posGuio = nif.indexOf('-');
-    
+
     if (posGuio != -1) {
-      nif = nif.substring(posGuio + 1);      
+      nif = nif.substring(posGuio + 1);
     }
-    
-    
+
+
     return new String[] { nif, map.get("OID.1.3.6.1.4.1.5734.1.6") };
   }
-    
-  
+
+
   /**
    * This static method is the default implementation of the
    * getSubjectAlternaitveNames method in X509Certificate. A
@@ -742,7 +747,7 @@ public class CertificateUtils {
   public static Map<String, String> getAlternativeNamesOfExtension(X509Certificate cert,
       String oid) throws CertificateParsingException {
     try {
-      
+
       Map<String, String> values = new HashMap<String, String>();
 
       byte[] ext = cert.getExtensionValue(oid);
@@ -787,10 +792,10 @@ public class CertificateUtils {
   }
 
 
-  
-    
 
-  
+
+
+
   /**
    * Converts a GeneralNames structure into an immutable Collection of
    * alternative names (subject or issuer) in the form required by
@@ -865,14 +870,14 @@ public class CertificateUtils {
     public int getType() {
       return type;
     }
-  
+
     public String getValue() {
       return value;
     }
 
   }
-  
-  
+
+
   /**
    * This represents the Subject Alternative Name Extension.
    *
@@ -902,8 +907,8 @@ public class CertificateUtils {
        */
       // public static final String IDENT =
       //                     "x509.info.extensions.SubjectAlternativeName";
-    
-    
+
+
       /**
        * Attribute names.
        */
