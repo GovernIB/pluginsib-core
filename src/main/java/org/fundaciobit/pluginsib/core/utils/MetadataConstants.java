@@ -1502,6 +1502,17 @@ public class MetadataConstants {
   public static final MetadataConstant _FUNCTIONARY_ADMINISTRATIONID = new MetadataConstant(
       FUNCTIONARY_ADMINISTRATIONID, MetadataType.STRING,
       "NIF del funcionario que realizo el escaneo");
+  
+  
+  /**
+   * DIR3 del funcionario que realizo el escaneo
+   */
+  public static final String FUNCTIONARY_DIR3 = "functionary_dir3";
+
+  public static final MetadataConstant _FUNCTIONARY_DIR3 = new MetadataConstant(
+      FUNCTIONARY_DIR3, MetadataType.STRING,
+      "Unidad DIR3 a la cual pertenece el funcionario que realizo el escaneo");
+  
 
   /** ===================================================================== **/
   /** ===================================================================== **/
