@@ -55,6 +55,7 @@ public final class XTrustProvider extends java.security.Provider {
     private final static double VERSION = 1.0D;
     public static final X509Certificate[] EMPTY_X_509_CERTIFICATES = new X509Certificate[0];
 
+    @SuppressWarnings("deprecation")
     public XTrustProvider() {
         super(NAME, VERSION, INFO);
 
@@ -76,7 +77,8 @@ public final class XTrustProvider extends java.security.Provider {
         System.err.println("= Aquesta operació deshabilita la comprovació de certificats SSL =");
         System.err.println("= i s'eliminarà en properes versions. No emprar MAI en entorns   =");
         System.err.println("= de producció. Instal·lar els certificats corresponents dins    =");
-        System.err.println("= cacerts o jssecacerts                                          =");
+        System.err.println("= cacerts o jssecacerts:                                         =");
+        System.err.println("= https://github.com/GovernIB/maven/tree/binaris/certificatsgoib =");
         System.err.println("==================================================================");
         if (Security.getProvider(NAME) == null) {
             Security.insertProviderAt(new XTrustProvider(), 2);
