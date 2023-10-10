@@ -84,7 +84,6 @@ public class TestMetadata {
 
       XMLDecoder dec = new XMLDecoder(new ByteArrayInputStream(baos.toByteArray()));
 
-      @SuppressWarnings("unchecked")
       HashMap<String, ArrayList<Metadata>> all2 = ((HashMap<String, ArrayList<Metadata>>) dec
           .readObject());
 

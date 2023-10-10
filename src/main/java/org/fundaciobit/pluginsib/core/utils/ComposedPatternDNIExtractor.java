@@ -3,6 +3,11 @@ package org.fundaciobit.pluginsib.core.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * @author anadal
+ *
+ */
 public class ComposedPatternDNIExtractor implements DNIExtractor {
 
     private final List<DNIExtractor> extractors = new ArrayList<DNIExtractor>();

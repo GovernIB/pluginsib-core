@@ -20,9 +20,7 @@ public class PatternDNIExtractor implements DNIExtractor {
     @Override
     public String extract(String serialnumber) {
         Matcher matcher = pattern.matcher(serialnumber);
-        return matcher.matches() ?
-                matcher.group(1)
-                : (nullIfNotMatch ? null : serialnumber);
+        return matcher.matches() ? matcher.group(1) : (nullIfNotMatch ? null : serialnumber);
     }
 
 }
