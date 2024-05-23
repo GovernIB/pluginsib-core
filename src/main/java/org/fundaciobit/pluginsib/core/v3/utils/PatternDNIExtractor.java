@@ -1,4 +1,4 @@
-package org.fundaciobit.pluginsib.core.utils;
+package org.fundaciobit.pluginsib.core.v3.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

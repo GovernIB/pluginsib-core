@@ -7,7 +7,10 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 
-public class CheckKeyStore {
+/**
+ * @author anadal
+ */
+public class CheckKeyStoreV3 {
 
   public static void main(String[] args) {
     try {

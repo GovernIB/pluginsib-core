@@ -1,9 +1,8 @@
-package org.fundaciobit.pluginsib.core.test;
+package org.fundaciobit.pluginsib.core.test.v3;
 
 
-import org.fundaciobit.pluginsib.core.utils.CertificateUtils;
-import org.fundaciobit.pluginsib.core.utils.ComposedPatternDNIExtractor;
-import org.fundaciobit.pluginsib.core.utils.DNIExtractor;
+import org.fundaciobit.pluginsib.core.v3.utils.ComposedPatternDNIExtractor;
+import org.fundaciobit.pluginsib.core.v3.utils.DNIExtractor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +17,7 @@ public class ComposedPatternDNIExtractorTest {
     @Before
     public void setup() {
         List<String> patterns = new ArrayList<String>();
-        patterns.add(CertificateUtils.DEFAULT_DNI_PATTERN);
+        patterns.add(DNIExtractor.DEFAULT_DNI_PATTERN);
         patterns.add("^(UNDOSTRES)$");
         extractor = new ComposedPatternDNIExtractor(patterns);
     }

@@ -1,8 +1,8 @@
-package org.fundaciobit.pluginsib.core.test;
+package org.fundaciobit.pluginsib.core.test.v3;
 
 import java.io.IOException;
 
-import org.fundaciobit.pluginsib.core.utils.Base64;
+import org.fundaciobit.pluginsib.core.v3.utils.Base64;
 
 import junit.framework.Assert;
 

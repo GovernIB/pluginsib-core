@@ -1,8 +1,7 @@
-package org.fundaciobit.pluginsib.core.test;
+package org.fundaciobit.pluginsib.core.test.v3;
 
-import org.fundaciobit.pluginsib.core.utils.CertificateUtils;
-import org.fundaciobit.pluginsib.core.utils.DNIExtractor;
-import org.fundaciobit.pluginsib.core.utils.PatternDNIExtractor;
+import org.fundaciobit.pluginsib.core.v3.utils.DNIExtractor;
+import org.fundaciobit.pluginsib.core.v3.utils.PatternDNIExtractor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +12,7 @@ public class PatternDNIExtractorTest {
 
     @Before
     public void setup() {
-        extractor = new PatternDNIExtractor(CertificateUtils.DEFAULT_DNI_PATTERN, true);
+        extractor = new PatternDNIExtractor(DNIExtractor.DEFAULT_DNI_PATTERN, true);
     }
 
     @Test

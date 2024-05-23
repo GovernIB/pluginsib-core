@@ -1,15 +1,15 @@
-package org.fundaciobit.pluginsib.core.utils;
+package org.fundaciobit.pluginsib.core.v3.utils;
 
 import java.util.Properties;
 
-import org.fundaciobit.pluginsib.core.IPlugin;
+import org.fundaciobit.pluginsib.core.v3.IPluginIB;
 
 /**
  * 
  * @author anadal
  * 
  */
-public abstract class AbstractPluginProperties implements IPlugin {
+public abstract class AbstractPluginProperties implements IPluginIB {
 
     private final String propertyKeyBase;
 

@@ -1,11 +1,11 @@
-package org.fundaciobit.pluginsib.core.test;
+package org.fundaciobit.pluginsib.core.test.v3;
 
 
 import java.security.Key;
 
 import javax.crypto.spec.SecretKeySpec;
 
-import org.fundaciobit.pluginsib.core.utils.EncrypterDecrypter;
+import org.fundaciobit.pluginsib.core.v3.utils.EncrypterDecrypter;
 
 import junit.framework.Assert;
 

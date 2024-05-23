@@ -1,4 +1,4 @@
-package org.fundaciobit.pluginsib.core.test;
+package org.fundaciobit.pluginsib.core.test.v3;
 
 
 
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.fundaciobit.pluginsib.core.utils.FileUtils;
+import org.fundaciobit.pluginsib.core.v3.utils.FileUtils;
 
 import junit.framework.Assert;
 

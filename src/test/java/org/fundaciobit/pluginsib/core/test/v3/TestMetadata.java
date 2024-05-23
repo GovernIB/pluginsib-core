@@ -1,4 +1,4 @@
-package org.fundaciobit.pluginsib.core.test;
+package org.fundaciobit.pluginsib.core.test.v3;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -7,8 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.fundaciobit.pluginsib.core.utils.Metadata;
-import org.fundaciobit.pluginsib.core.utils.MetadataType;
+import org.fundaciobit.pluginsib.core.v3.utils.Metadata;
+import org.fundaciobit.pluginsib.core.v3.utils.MetadataType;
 
 import junit.framework.Assert;
 

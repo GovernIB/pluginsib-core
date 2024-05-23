@@ -1,14 +1,6 @@
-package org.fundaciobit.pluginsib.core.test;
+package org.fundaciobit.pluginsib.core.test.v3;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.fundaciobit.pluginsib.core.utils.CertificateUtils;
+import org.fundaciobit.pluginsib.core.v3.test.TestUtils;
 
 
 /**
@@ -17,7 +9,7 @@ import org.fundaciobit.pluginsib.core.utils.CertificateUtils;
  *
  */
 public class TestCertificate extends TestUtils {
-
+/*
   public static Logger log = Logger.getLogger(TestCertificate.class);
 
   public static boolean debug = false;
@@ -72,13 +64,7 @@ public class TestCertificate extends TestUtils {
         } else {
           InputStream certstream = new FileInputStream(new File(filePath));
           certificate1 = CertificateUtils.decodeCertificate(certstream);
-          // TODO
-          /*
-           * CertificateFactory cf = CertificateFactory.getInstance("X.509");
-           * 
-           * certificate1 = (X509Certificate)
-           * cf.generateCertificate(certstream);
-           */
+
 
         }
         if (debug == true) {
@@ -135,6 +121,6 @@ public class TestCertificate extends TestUtils {
 
   }
   
-  
+  */
 
 }
