@@ -15,11 +15,17 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
+    <developers>
+        <developer>
+            <id>anadal-fundaciobit</id>
+            <name>Antoni Nadal</name>
+        </developer>
+    </developers>
+
     <organization>
         <name>Fundació Bit - Govern Digital</name>
         <url>https://governdigital.fundaciobit.org</url>
     </organization>
-    <inceptionYear>2014</inceptionYear>
 
     <licenses>
         <license>
