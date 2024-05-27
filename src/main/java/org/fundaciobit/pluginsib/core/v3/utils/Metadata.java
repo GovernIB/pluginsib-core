@@ -175,14 +175,6 @@ public class Metadata implements Serializable {
         return (this.key + "_" + this.value).hashCode();
     }
 
-    public static void main(String[] args) {
-
-        BigInteger bi = new BigInteger("-3245435.56");
-
-        System.out.println(" HOLA " + bi.toString());
-
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof Metadata) {

@@ -1,7 +1,8 @@
 package org.fundaciobit.pluginsib.core.v3.utils;
 
 import java.util.Properties;
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
+
 
 /**
  * 

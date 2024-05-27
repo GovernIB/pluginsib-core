@@ -10,12 +10,16 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import org.jboss.logging.Logger;
+
 /**
  * 
  * @author anadal
  *
  */
 public class MetadataConstants {
+    
+    protected static Logger log = Logger.getLogger(MetadataConstants.class);
 
     /**
      * 
@@ -1458,7 +1462,7 @@ public class MetadataConstants {
 
         metadatasList = new ArrayList<String>();
         for (Field field : declaredFields) {
-            // System.out.println(field.getName() + " --> " + field.getType());
+            // log.info(field.getName() + " --> " + field.getType());
             if (java.lang.reflect.Modifier.isStatic(field.getModifiers())
                     && java.lang.reflect.Modifier.isPublic(field.getModifiers())) {
                 // staticFields.add(field);
@@ -1571,9 +1575,9 @@ public class MetadataConstants {
 
         internalCompute();
 
-        System.out.println(" list " + metadatasList.size());
+        log.info(" list " + metadatasList.size());
 
-        System.out.println(" map  " + metadataInfoMap.size());
+        log.info(" map  " + metadataInfoMap.size());
 
         // final String regex = _ENI_ID.getPatternRegEx();
         // final String string = "ES_E00003901_2011_MPTAP000000000000000020110512E";
@@ -1597,7 +1601,7 @@ public class MetadataConstants {
         Metadata[] metas = new Metadata[] { eniID, res, res2, idioma, idioma2, desconeguda };
         Boolean[] results = validate(metas);
         for (int i = 0; i < metas.length; i++) {
-            System.out.println(metas[i].getKey() + "[" + metas[i].getValue() + "] => " + results[i]);
+            log.info(metas[i].getKey() + "[" + metas[i].getValue() + "] => " + results[i]);
         }
 
         /*
@@ -1606,12 +1610,12 @@ public class MetadataConstants {
          * pattern.matcher(string);
          * 
          * 
-         * System.out.println(" MATCH = " + Pattern.matches(regex, string));
+         * log.info(" MATCH = " + Pattern.matches(regex, string));
          * 
          * 
          * 
-         * while (matcher.find()) { //System.out.println("Full match: " + matcher.group(0)); for
-         * (int i = 0; i <= matcher.groupCount(); i++) { System.out.println("Group " + i + ": " +
+         * while (matcher.find()) { //log.info("Full match: " + matcher.group(0)); for
+         * (int i = 0; i <= matcher.groupCount(); i++) { log.info("Group " + i + ": " +
          * matcher.group(i)); } }
          */
     }

@@ -29,7 +29,7 @@ public class TestCertificate extends TestUtils {
     String[] certs = getCertificates();
 
     for (String certNumber : certs) {
-      System.out.println(" ---- " + certNumber + " -------");
+      log.info(" ---- " + certNumber + " -------");
 
       String certInfo = getProperty("cert." + certNumber);
 
@@ -41,14 +41,14 @@ public class TestCertificate extends TestUtils {
 
       // String passwordcert = passwordks;
 
-      // System.out.println("filePath: " + filePath);
-      // System.out.println("passwordks: " + passwordks);
+      // log.info("filePath: " + filePath);
+      // log.info("passwordks: " + passwordks);
 
       // Stirng alias
       // Stirng password
       try {
 
-        // System.out.println("XXXXXXXXX = " + KeyStore.getDefaultType());
+        // log.info("XXXXXXXXX = " + KeyStore.getDefaultType());
 
         X509Certificate certificate1;
 
@@ -68,52 +68,47 @@ public class TestCertificate extends TestUtils {
 
         }
         if (debug == true) {
-          System.out.println("Certificate: " + certificate1);
+          log.info("Certificate: " + certificate1);
 
-          System.out.println("Subject Name DN: " + certificate1.getSubjectDN().getName());
-          System.out.println("Subject Name: " + CertificateUtils.getCN(certificate1));
-          System.out.println("Emissior Name DN: " + certificate1.getIssuerDN().toString());
-          System.out.println("Emissior Name: "
+          log.info("Subject Name DN: " + certificate1.getSubjectDN().getName());
+          log.info("Subject Name: " + CertificateUtils.getCN(certificate1));
+          log.info("Emissior Name DN: " + certificate1.getIssuerDN().toString());
+          log.info("Emissior Name: "
               + CertificateUtils.getCN(certificate1.getIssuerDN().toString()));
-          System.out.println();
+          log.info();
         }
 
         //
-        System.out.println("Subject getSimpleName: "
+        log.info("Subject getSimpleName: "
             + CertificateUtils.getSubjectCorrectName(certificate1));
-        System.out.println("Subject NIF: " + CertificateUtils.getDNI(certificate1));
+        log.info("Subject NIF: " + CertificateUtils.getDNI(certificate1));
         String unitatAdministrativa = CertificateUtils.getUnitatAdministrativa(certificate1);
         if (unitatAdministrativa != null) {
-          System.out.println("Unitat Administrativa: " + unitatAdministrativa);
+          log.info("Unitat Administrativa: " + unitatAdministrativa);
         }
         String carrec = CertificateUtils.getCarrec(certificate1);
         if (carrec != null) {
-          System.out.println("Carrec: " + carrec);
+          log.info("Carrec: " + carrec);
         }
-        System.out.println("Emissor: "
+        log.info("Emissor: "
             + CertificateUtils.getCN(certificate1.getIssuerDN().toString()));
         
         
         String[] infoEmpresa = CertificateUtils.getEmpresaNIFNom(certificate1);
         if (infoEmpresa != null) {
-          System.out.println("Empresa-NIF: " + infoEmpresa[0]);
-          System.out.println("Empresa-Nom: " + infoEmpresa[1]);
+          log.info("Empresa-NIF: " + infoEmpresa[0]);
+          log.info("Empresa-Nom: " + infoEmpresa[1]);
         }
 
       } catch (Exception e) {
-        System.out.println("ERROR [" + certNumber + "]");
+        log.info("ERROR [" + certNumber + "]");
         e.printStackTrace();
       }
 
     }
 
   }
-  
-  
-  
 
-  
-  
   
   public static void main(String[] args) {
 

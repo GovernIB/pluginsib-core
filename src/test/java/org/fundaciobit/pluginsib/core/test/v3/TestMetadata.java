@@ -9,8 +9,8 @@ import java.util.HashMap;
 
 import org.fundaciobit.pluginsib.core.v3.utils.Metadata;
 import org.fundaciobit.pluginsib.core.v3.utils.MetadataType;
-
-import junit.framework.Assert;
+import org.jboss.logging.Logger;
+import org.junit.Assert;
 
 /**
  * 
@@ -19,83 +19,83 @@ import junit.framework.Assert;
  */
 public class TestMetadata {
 
-  @org.junit.Test
-  public void test() {
+    protected static Logger log = Logger.getLogger(TestMetadata.class);
 
-    System.out.println();
+    @org.junit.Test
+    public void test() {
 
-    try {
-      Metadata.checkMetadata(null);
-      Assert.fail("S'esperava que llancés una excepció.");
+        log.info(" ENTRA A TEST METADATA");
 
-    } catch (Exception e) {
-      // TODO: handle exception
+        try {
+            Metadata.checkMetadata(null);
+            Assert.fail("S'esperava que llancés una excepció.");
+        } catch (Exception e) {
+            // OK
+        }
+
+        // Valor sencer no correcte
+        Metadata m1 = new Metadata("clau", 33);
+        Assert.assertEquals("33", m1.getValue());
+
+        // boolean
+        Metadata m2 = new Metadata("clau2", true);
+        Assert.assertEquals("true", m2.getValue());
+
+        // boolean
+        Metadata m3 = new Metadata("clau3", false);
+        Assert.assertEquals("false", m3.getValue());
+
+        Metadata m4 = new Metadata("clau4", Math.pow(5, 8));
+        Assert.assertEquals("390625.0", m4.getValue());
+
+        Metadata m5 = new Metadata("clau5", 0.0000000053);
+        Assert.assertEquals("5.3E-9", m5.getValue());
+
     }
 
-    // Valor sencer no correcte
-    Metadata m1 = new Metadata("clau", 33);
-    Assert.assertEquals("33", m1.getValue());
+    // @SuppressWarnings("unchecked")
+    public static void main(String[] args) {
 
-    // boolean
-    Metadata m2 = new Metadata("clau2", true);
-    Assert.assertEquals("true", m2.getValue());
+        try {
 
-    // boolean
-    Metadata m3 = new Metadata("clau3", false);
-    Assert.assertEquals("false", m3.getValue());
+            HashMap<String, ArrayList<Metadata>> all = new HashMap<String, ArrayList<Metadata>>();
 
-    Metadata m4 = new Metadata("clau4", Math.pow(5, 8));
-    Assert.assertEquals("390625.0", m4.getValue());
+            ArrayList<Metadata> k1 = new ArrayList<Metadata>();
+            k1.add(new Metadata("k1", "value11", MetadataType.STRING));
+            k1.add(new Metadata("k1", "value12", MetadataType.STRING));
 
-    Metadata m5 = new Metadata("clau5", 0.0000000053);
-    Assert.assertEquals("5.3E-9", m5.getValue());
+            all.put("k1", k1);
 
-  }
+            ArrayList<Metadata> k2 = new ArrayList<Metadata>();
+            k2.add(new Metadata("k2", "12", MetadataType.INTEGER));
 
-  // @SuppressWarnings("unchecked")
-  public static void main(String[] args) {
+            all.put("k2", k2);
 
-    try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-      HashMap<String, ArrayList<Metadata>> all = new HashMap<String, ArrayList<Metadata>>();
+            {
+                java.beans.XMLEncoder xmlEnc = new XMLEncoder(baos);
 
-      ArrayList<Metadata> k1 = new ArrayList<Metadata>();
-      k1.add(new Metadata("k1", "value11", MetadataType.STRING));
-      k1.add(new Metadata("k1", "value12", MetadataType.STRING));
+                xmlEnc.writeObject(all);
 
-      all.put("k1", k1);
+                xmlEnc.close();
+            }
 
-      ArrayList<Metadata> k2 = new ArrayList<Metadata>();
-      k2.add(new Metadata("k2", "12", MetadataType.INTEGER));
+            log.info(new String(baos.toByteArray()));
 
-      all.put("k2", k2);
+            XMLDecoder dec = new XMLDecoder(new ByteArrayInputStream(baos.toByteArray()));
 
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            HashMap<String, ArrayList<Metadata>> all2 = ((HashMap<String, ArrayList<Metadata>>) dec.readObject());
 
-      {
-        java.beans.XMLEncoder xmlEnc = new XMLEncoder(baos);
+            log.info(all2.size());
 
-        xmlEnc.writeObject(all);
+            dec.close();
 
-        xmlEnc.close();
-      }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-      System.out.println(new String(baos.toByteArray()));
-
-      XMLDecoder dec = new XMLDecoder(new ByteArrayInputStream(baos.toByteArray()));
-
-      HashMap<String, ArrayList<Metadata>> all2 = ((HashMap<String, ArrayList<Metadata>>) dec
-          .readObject());
-
-      System.out.println(all2.size());
-
-      dec.close();
-
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
     }
-
-  }
 
 }
