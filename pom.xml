@@ -61,7 +61,7 @@
                         </goals>
                         <configuration>
                             <includes>
-                                <include>**/plugins/test/**</include>
+                                <include>**/test/**</include>
                             </includes>
                         </configuration>
                     </execution>

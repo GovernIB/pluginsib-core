@@ -540,7 +540,15 @@ public class CertificateUtils {
 
         return nif;
     }
-    
+
+    public static String getPseudonym(X509Certificate certificate) {
+        if (certificate == null) {
+            return null;
+        }
+
+        final String subjectDNStr = certificate.getSubjectDN().toString();
+        return CertificateUtils.getRDNvalue("OID.2.5.4.65", subjectDNStr);
+    }
 
 
 
