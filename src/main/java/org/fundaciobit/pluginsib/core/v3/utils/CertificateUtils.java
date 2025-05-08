@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -567,5 +568,97 @@ public class CertificateUtils {
         }
         return carrec;
     }
+    
+
+    /** Obtienen el seud&oacute;nimo de un certificado si este es de tipo seud&oacute;nimo
+     * @param cert Certificado que hay que comprobar.
+     * @return Devuelve el pseudonimo si es un certificado de seud&oacute;nimo, {@code null} en caso contrario.
+     * @see https://oidref.com/2.5.4.65 
+     */
+    public static String getPseudonymValue(final X509Certificate cert) {
+        // El certificado es de seudonimo si declara la extension 2.5.4.65
+        return getRDNvalueFromLdapName("2.5.4.65", //$NON-NLS-1$
+                cert.getSubjectX500Principal().getName(X500Principal.RFC2253));
+    }
+
+    /** Identifica si un certificado es de seud&oacute;nimo.
+     * @param cert Certificado que hay que comprobar.
+     * @return Devuelve {@code true} si es un certificado de seud&oacute;nimo, {@code false} en caso contrario.
+     * https://oidref.com/2.5.4.65 
+     */
+    public static boolean isPseudonymCert(final X509Certificate cert) {
+        // El certificado es de seudonimo si declara la extension 2.5.4.65
+        return getRDNvalueFromLdapName("2.5.4.65", //$NON-NLS-1$
+                cert.getSubjectX500Principal().getName(X500Principal.RFC2253)) != null;
+    }
+
+    /** Recupera el valor de un RDN (<i>Relative Distinguished Name</i>) de un principal. El valor de retorno no incluye
+     * el nombre del RDN, el igual, ni las posibles comillas que envuelvan el valor.
+     * La funci&oacute;n no es sensible a la capitalizaci&oacute;n del RDN. Si no se
+     * encuentra, se devuelve {@code null}.
+     * @param rdn RDN que deseamos encontrar.
+     * @param principal Principal del que extraer el RDN (seg&uacute;n la <a href="http://www.ietf.org/rfc/rfc4514.txt">RFC 4514</a>).
+     * @return Valor del RDN indicado o {@code null} si no se encuentra. */
+    public static String getRDNvalueFromLdapName(final String rdn, final String principal) {
+
+        int offset1 = 0;
+        while ((offset1 = principal.toLowerCase(Locale.US).indexOf(rdn.toLowerCase(), offset1)) != -1) {
+
+            if (offset1 > 0 && principal.charAt(offset1 - 1) != ',' && principal.charAt(offset1 - 1) != ' ') {
+                offset1++;
+                continue;
+            }
+
+            offset1 += rdn.length();
+            while (offset1 < principal.length() && principal.charAt(offset1) == ' ') {
+                offset1++;
+            }
+
+            if (offset1 >= principal.length()) {
+                return null;
+            }
+
+            if (principal.charAt(offset1) != '=') {
+                continue;
+            }
+
+            offset1++;
+            while (offset1 < principal.length() && principal.charAt(offset1) == ' ') {
+                offset1++;
+            }
+
+            if (offset1 >= principal.length()) {
+                return ""; //$NON-NLS-1$
+            }
+
+            int offset2;
+            if (principal.charAt(offset1) == ',') {
+                return ""; //$NON-NLS-1$
+            } else if (principal.charAt(offset1) == '"') {
+                offset1++;
+                if (offset1 >= principal.length()) {
+                    return ""; //$NON-NLS-1$
+                }
+
+                offset2 = principal.indexOf('"', offset1);
+                if (offset2 == offset1) {
+                    return ""; //$NON-NLS-1$
+                } else if (offset2 != -1) {
+                    return principal.substring(offset1, offset2);
+                } else {
+                    return principal.substring(offset1);
+                }
+            } else {
+                offset2 = principal.indexOf(',', offset1);
+                if (offset2 != -1) {
+                    return principal.substring(offset1, offset2).trim();
+                }
+                return principal.substring(offset1).trim();
+            }
+        }
+
+        return null;
+    }
+
 
 }
