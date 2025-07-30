@@ -372,7 +372,7 @@ public class CertificateUtils {
     public static String getSubjectCorrectName(X509Certificate cert) {
 
         final String subjectDNStr = cert.getSubjectDN().toString();
-
+        
         String certName = getCN(subjectDNStr);
 
         // Parche pels certificat DNIe (eliminar FIRMA i AUTENTICACION)
@@ -446,6 +446,9 @@ public class CertificateUtils {
 
         // sn
         String llinatges = getRDNvalue("surname", subjectDNStr);
+        
+        
+        
 
         if (llinatges != null && llinatges.trim().length() != 0) {
 
@@ -455,13 +458,15 @@ public class CertificateUtils {
             if (nom == null || nom.trim().length() == 0) {
                 nom = getRDNvalue("g", subjectDNStr);
             }
+            
 
             if (nom != null && nom.trim().length() != 0) {
-                String fullName = nom + " " + llinatges;
+                String fullName = (nom + " " + llinatges).trim();
 
-                if (fullName.length() >= certName.length()) {
+                // No se per quina raó hi ha aquesta condició
+                //if (fullName.length() >= certName.length()) {
                     return fullName;
-                }
+                //}
             }
 
         }
